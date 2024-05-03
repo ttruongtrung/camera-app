@@ -1,0 +1,65 @@
+const Camera = require('../models/camera.model');
+
+module.exports = {
+  createCamera: (req, res) => {
+    const cameraData = {
+      status: req.body.status,
+      model_type: req.body.model_type,
+      name: req.body.name,
+      ip_address: req.body.ip_address,
+      username: req.body.username,
+      password: req.body.password,
+      created_at: new Date().toISOString().slice(0, 19).replace('T', ' '),
+      updated_at: new Date().toISOString().slice(0, 19).replace('T', ' ')
+    };
+
+    Camera.create(cameraData, (err, data) => {
+      if (err) res.status(500).send({ message: err.message });
+      else res.status(201).send(data);
+    });
+  },
+
+  getAllCameras: (req, res) => {
+    Camera.getAll((err, data) => {
+      if (err) res.status(500).send({ message: err.message });
+      else res.status(200).send(data);
+    });
+  },
+
+  getCameraById: (req, res) => {
+    const id = req.params.id;
+    Camera.getById(id, (err, data) => {
+      if (err) res.status(500).send({ message: err.message });
+      else if (!data) res.status(404).send({ message: 'Camera not found' });
+      else res.status(200).send(data);
+    });
+  },
+
+  updateCamera: (req, res) => {
+    const id = req.params.id;
+    const updates = {
+      status: req.body.status,
+      model_type: req.body.model_type,
+      name: req.body.name,
+      ip_address: req.body.ip_address,
+      username: req.body.username,
+      password: req.body.password,
+      updated_at: new Date().toISOString().slice(0, 19).replace('T', ' ')
+    };
+
+    Camera.update(id, updates, (err, data) => {
+      if (err) res.status(500).send({ message: err.message });
+      else if (!data) res.status(404).send({ message: 'Camera not found' });
+      else res.status(200).send(data);
+    });
+  },
+
+  deleteCameraById: (req, res) => {
+    const id = req.params.id;
+    Camera.deleteById(id, (err, data) => {
+      if (err) res.status(500).send({ message: err.message });
+      else if (!data) res.status(404).send({ message: 'Camera not found' });
+      else res.status(204).send();
+    });
+  }
+};
