@@ -1,4 +1,5 @@
-const VideoSegment = require('../models/videoSegment.model');
+const db = require('../models/dbconnect');
+const VideoSegment = db.videoSegment;
 
 module.exports = {
   create: async (req, res) => {
@@ -102,6 +103,18 @@ module.exports = {
       }
     } catch (error) {
       console.error('Error deleting video segment:', error);
+      res.status(500).send({ error: 'Internal server error' });
+    }
+  },
+
+  getVideoSegmentsByCameraId: async (req, res) => {
+    const cameraId = req.params.cameraId;
+    
+    try {
+      const videoSegments = await VideoSegment.findAll({ where: { cameraId } });
+      res.status(200).send(videoSegments);
+    } catch (error) {
+      console.error('Error retrieving video segments by cameraId:', error);
       res.status(500).send({ error: 'Internal server error' });
     }
   }

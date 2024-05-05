@@ -1,10 +1,11 @@
-const Camera = require('../models/camera.model');
+const db = require('../models/dbconnect');
+const Camera = db.camera;
 
 module.exports = {
   createCamera: async (req, res) => {
     try {
       const cameraData = {
-        status: req.body.status,
+        status: req.body.status || 'create',
         model_type: req.body.model_type,
         name: req.body.name,
         ip_address: req.body.ip_address,

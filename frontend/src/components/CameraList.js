@@ -1,21 +1,23 @@
 import React from 'react';
+import { BsPlusCircleDotted } from "react-icons/bs";
+import CameraPanel from './CameraPanel';
 
-const CameraList = ({ cameras }) => {
+const CameraList = ({ cameras, onAddCamera }) => {
   return (
     <div className="container mx-auto w-full">
       <h1 className="text-2xl font-bold mb-4">Camera List</h1>
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 justify-center items-center">
         {cameras.map(camera => (
-          <div key={camera.id} className="bg-white rounded-lg shadow-md p-4 w-96 mx-auto">
-            <h2 className="text-lg font-bold mb-2">{camera.name}</h2>
-            <p><span className="font-semibold">IP:</span> {camera.ip}</p>
-            <p><span className="font-semibold">Status:</span> {camera.status}</p>
-            <button className="mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-              Action
-            </button>
-          </div>
+          <CameraPanel key={camera.id} camera={camera} />
         ))}
-      </div>
+        <div 
+          className="flex items-center justify-center p-4 border-solid border-2 w-96 rounded-lg shadow-md text-gray-400 cursor-pointer hover:text-gray-500 hover:border-gray-500"
+          onClick={onAddCamera}
+        >
+          <BsPlusCircleDotted size={48}/>
+          <span className="ml-4 font-bold">Thêm mới Camera</span>
+        </div>
+      </div>   
     </div>
   );
 };
