@@ -7,6 +7,7 @@ import VideoSegmentsList from '../components/VideoSegmentList';
 const AdminPage = () => {
   const [cameras, setCameras] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const apiPath = process.env.REACT_APP_BE_API_URL;
 
   useEffect(() => {
     fetchCameras();
@@ -14,7 +15,7 @@ const AdminPage = () => {
 
   const fetchCameras = async () => {
     try {
-      const response = await axios.get('http://localhost:3001/api/cameras');
+      const response = await axios.get(`${apiPath}/api/cameras`);
       setCameras(response.data);
     } catch (error) {
       console.error('Error fetching cameras:', error);
@@ -33,7 +34,7 @@ const AdminPage = () => {
   };
 
   return (
-    <div className="bg-white min-h-screen flex justify-center gap-20">
+    <div className="bg-gray-100 min-h-screen flex justify-center gap-20">
       <div className="py-8">
         <CameraList cameras={cameras} onAddCamera={() => setIsModalOpen(true)}/>
         <CameraModal 

@@ -5,7 +5,8 @@ import { LiaPhotoVideoSolid } from "react-icons/lia";
 const VideoSegmentsList = ({ cameraId }) => {
   const [currentSegment, setCurrentSegment] = useState(null);
   const [segments, setSegments] = useState([]);
-  const videoUrl = 'http://localhost:3001/api/storage/';
+  const apiPath = process.env.REACT_APP_BE_API_URL;
+  const videoUrl = apiPath + '/api/storage/';
 
   useEffect(() => { fetchSegments(); }, []);
 
@@ -17,14 +18,14 @@ const VideoSegmentsList = ({ cameraId }) => {
   ];
 
   const fetchSegments = async () => {
-    // try {
-    //   const response = await axios.get(`http://localhost:3001/api/camera/${cameraId}/segments`);
-    //   console.log(';;;'. response);
-    //   setSegments(response.data);
-    // } catch (error) {
-    //   console.error('Error fetching cameras:', error);
-    // }
-    setSegments(dummy);
+    try {
+      const response = await axios.get(`${apiPath}/api/camera/${cameraId}/segments`);
+      console.log(';;;', response);
+      setSegments(response.data);
+    } catch (error) {
+      console.error('Error fetching cameras:', error);
+    }
+    //setSegments(dummy);
   };
 
   const handleSegmentClick = (segment) => {
@@ -34,11 +35,11 @@ const VideoSegmentsList = ({ cameraId }) => {
   return (
     <div className="max-w-xl">
       {currentSegment && (
-        <div className="bg-gray-100 p-4 rounded-lg">
-          <h2 className="text-xl font-semibold bg-gray-200 text-gray-700 px-4 py-2 mb-2 rounded-lg font-[900]">
+        <div className="bg-white p-4 rounded-lg overflow-hidden">
+          <h2 className="text-xl font-semibold bg-black text-white px-4 py-2 mb-4 font-[900] -ml-4 -mt-4 w-[calc(100%+2rem)]">
             Đang xem: {currentSegment.description}
           </h2>
-          <div className="rounded-md overflow-hidden w-[500px] max-w-xl">
+          <div className="rounded-lg overflow-hidden w-[500px] max-w-xl">
             <video controls className="w-full" key={currentSegment.description}>
               <source src={videoUrl + currentSegment.description} type="video/mp4" />
               Your browser does not support the video tag.
@@ -46,8 +47,10 @@ const VideoSegmentsList = ({ cameraId }) => {
           </div>
         </div>
       )}
-      <div className="mt-8 bg-gray-100 p-4 rounded-lg">
-        <h2 className="text-xl font-semibold bg-gray-200 text-gray-700 px-4 py-2 mb-2 rounded-lg font-[900]">Đoạn video ngắn</h2>
+      <div className="mt-4 bg-white p-4 rounded-lg overflow-hidden">
+        <h2 className="text-xl font-semibold bg-black text-white px-4 py-2 mb-4 font-[900] -ml-4 -mt-4 w-[calc(100%+2rem)]">
+          Đoạn video ngắn
+        </h2>
         <div className="flex flex-col items-center gap-2">
           {segments.map((segment, index) => (
             <div 
@@ -59,7 +62,7 @@ const VideoSegmentsList = ({ cameraId }) => {
             >
               <LiaPhotoVideoSolid size={32}/>
               <div>
-                <div className="mt-2 text-sm font-semibold">{segment.start_time} - {segment.end_time}</div>
+                <div className="mt-2 text-sm font-semibold">{segment.startTime} - {segment.end_time}</div>
                 <div className="text-xs text-gray-500">Chọn để xem trước hay tải về </div>
               </div>
               

@@ -4,8 +4,8 @@ import CameraPanel from './CameraPanel';
 
 const CameraList = ({ cameras, onAddCamera }) => {
   return (
-    <div className="container mx-auto w-full bg-gray-100 p-4">
-      <h1 className="text-xl font-semibold bg-gray-200 text-gray-700 px-4 py-2 mb-2 rounded-lg font-[900]">
+    <div className="container mx-auto w-full bg-white p-6 rounded-lg overflow-hidden">
+      <h1 className="text-xl font-semibold bg-black text-white px-4 py-2 mb-6 font-[900] -ml-6 -mt-6 w-[calc(100%+3rem)]">
         Danh Sách Camera
       </h1>
       <div className="flex flex-col gap-4 justify-center items-center">
