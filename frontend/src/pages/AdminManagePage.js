@@ -33,7 +33,7 @@ const AdminPage = () => {
   };
 
   return (
-    <div className="bg-gray-100 min-h-screen flex justify-center gap-20">
+    <div className="bg-white min-h-screen flex justify-center gap-20">
       <div className="py-8">
         <CameraList cameras={cameras} onAddCamera={() => setIsModalOpen(true)}/>
         <CameraModal 
@@ -42,7 +42,7 @@ const AdminPage = () => {
           onAdd={handleAddCamera}
         />
       </div>
-      <div>
+      <div className="py-8">
         <VideoSegmentsList cameraId={1}/>
       </div>
     </div>
