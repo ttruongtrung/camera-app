@@ -8,7 +8,11 @@ const VideoSegmentsList = ({ cameraId }) => {
   const apiPath = process.env.REACT_APP_BE_API_URL;
   const videoUrl = apiPath + '/api/storage/';
 
-  useEffect(() => { fetchSegments(); }, []);
+  useEffect(() => {
+    if (cameraId) {
+      fetchSegments(); 
+    }
+  }, [cameraId]);
 
   const dummy = [
     { id: 1, description: 'abc.mp4', start_time: '3:00 PM', end_time: '4:00PM'},

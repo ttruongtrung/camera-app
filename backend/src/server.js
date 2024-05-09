@@ -38,6 +38,7 @@ function startCaptureStream() {
 	const fileName = `data_${Date.now()}.mp4`;
 	const outputPath = path.join(__dirname, '..', 'public', 'videos', fileName);
 	const rtsp_url = 'rtsp://admin:L2427AA6@192.168.1.13:554/cam/realmonitor?channel=1&subtype=0&unicast=true&proto=Onvif';
+	// const rtsp_url = 'public/videos/meme-2.mp4';
 	const args = [
 		'-copyts',
 		'-i', rtsp_url,
@@ -83,6 +84,7 @@ app.get('/api/testdb', (req, res) => {
 app.use('/api/storage', express.static(path.join(__dirname, '..','public', 'videos')));
 app.get('/api/cameras', (req, res) => Camera.getAllCameras(req, res));
 app.post('/api/camera', customMiddleware, (req, res) => Camera.createCamera(req, res));
+app.put('/api/camera/:id', (req, res) => Camera.updateCamera(req, res));
 app.get('/api/camera/:cameraId/segments', (req, res) => VideoSegment.getVideoSegmentsByCameraId(req, res));
 app.post('/api/camera/:cameraId/start-capture', (req, res) => {
 	if (!isCapturing) {
