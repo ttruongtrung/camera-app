@@ -2,13 +2,25 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { LiaPhotoVideoSolid } from "react-icons/lia";
 
-const VideoSegmentsList = ({ cameraId }) => {
+const VideoSegmentsList = ({ cameraId, selectedCamera, showDefault }) => {
+  const [currentCamera, selectedCurrentCamera] = useState(null);
   const [currentSegment, setCurrentSegment] = useState(null);
   const [segments, setSegments] = useState([]);
   const apiPath = process.env.REACT_APP_BE_API_URL;
   const videoUrl = apiPath + '/api/storage/';
 
-  useEffect(() => { fetchSegments(); }, []);
+  useEffect(() => {
+    if (selectedCamera !== currentCamera) {
+      selectedCurrentCamera(selectedCamera);
+      setCurrentSegment(null);
+    }
+  }, [selectedCamera])
+
+  useEffect(() => {
+    if (cameraId) {
+      fetchSegments(); 
+    }
+  }, [cameraId]);
 
   const dummy = [
     { id: 1, description: 'abc.mp4', start_time: '3:00 PM', end_time: '4:00PM'},
@@ -22,6 +34,9 @@ const VideoSegmentsList = ({ cameraId }) => {
       const response = await axios.get(`${apiPath}/api/camera/${cameraId}/segments`);
       console.log(';;;', response);
       setSegments(response.data);
+      if (showDefault && response.data.length > 0) {
+        setCurrentSegment(response.data[0]);
+      }
     } catch (error) {
       console.error('Error fetching cameras:', error);
     }
@@ -33,13 +48,13 @@ const VideoSegmentsList = ({ cameraId }) => {
   };
 
   return (
-    <div className="max-w-xl">
+    <div className="max-w-full md:max-w-xl">
       {currentSegment && (
-        <div className="bg-white p-4 rounded-lg overflow-hidden">
+        <div className="bg-white p-4 rounded-lg overflow-hidden min-w-[310px] mb-4">
           <h2 className="text-xl font-semibold bg-black text-white px-4 py-2 mb-4 font-[900] -ml-4 -mt-4 w-[calc(100%+2rem)]">
             Đang xem: {currentSegment.description}
           </h2>
-          <div className="rounded-lg overflow-hidden w-[500px] max-w-xl">
+          <div className="rounded-lg overflow-hidden w-[500px] max-w-full md:max-w-xl">
             <video controls className="w-full" key={currentSegment.description}>
               <source src={videoUrl + currentSegment.description} type="video/mp4" />
               Your browser does not support the video tag.
@@ -47,7 +62,7 @@ const VideoSegmentsList = ({ cameraId }) => {
           </div>
         </div>
       )}
-      <div className="mt-4 bg-white p-4 rounded-lg overflow-hidden">
+      <div className="bg-white p-4 rounded-lg overflow-hidden min-w-[310px]">
         <h2 className="text-xl font-semibold bg-black text-white px-4 py-2 mb-4 font-[900] -ml-4 -mt-4 w-[calc(100%+2rem)]">
           Đoạn video ngắn
         </h2>
