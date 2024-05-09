@@ -8,7 +8,7 @@ const VideoSegmentPage = () => {
     <div className="py-5 px-2 max-w-[min(572px,100%)] mx-auto">
       <h2 className="text-[32px] font-bold mb-4">Camera 1</h2>
       <div className="flex justify-center">
-        <VideoSegmentsList cameraId={cameraId} />
+        <VideoSegmentsList cameraId={cameraId} showDefault />
       </div>
     </div>
   );

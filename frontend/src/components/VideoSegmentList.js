@@ -2,11 +2,19 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { LiaPhotoVideoSolid } from "react-icons/lia";
 
-const VideoSegmentsList = ({ cameraId }) => {
+const VideoSegmentsList = ({ cameraId, selectedCamera, showDefault }) => {
+  const [currentCamera, selectedCurrentCamera] = useState(null);
   const [currentSegment, setCurrentSegment] = useState(null);
   const [segments, setSegments] = useState([]);
   const apiPath = process.env.REACT_APP_BE_API_URL;
   const videoUrl = apiPath + '/api/storage/';
+
+  useEffect(() => {
+    if (selectedCamera !== currentCamera) {
+      selectedCurrentCamera(selectedCamera);
+      setCurrentSegment(null);
+    }
+  }, [selectedCamera])
 
   useEffect(() => {
     if (cameraId) {
@@ -26,6 +34,9 @@ const VideoSegmentsList = ({ cameraId }) => {
       const response = await axios.get(`${apiPath}/api/camera/${cameraId}/segments`);
       console.log(';;;', response);
       setSegments(response.data);
+      if (showDefault && response.data.length > 0) {
+        setCurrentSegment(response.data[0]);
+      }
     } catch (error) {
       console.error('Error fetching cameras:', error);
     }

@@ -9,7 +9,7 @@ import Loading from '../components/Loading';
 const AdminPage = () => {
   const [selectedCamera, setSelectedCamera] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { data: cameras, isLoading } = useCameras();
+  const { data: cameras, isLoading, refetch } = useCameras();
 
   console.log(cameras);
 
@@ -17,6 +17,7 @@ const AdminPage = () => {
     try {
       await axios.post('http://localhost:3001/api/camera', camera);
       console.log('Camera added:', camera);
+      refetch();
     } catch (error) {
       console.error('Error adding camera:', error);
     }
@@ -41,7 +42,7 @@ const AdminPage = () => {
             />
           </div>
           <div className="py-8">
-            <VideoSegmentsList cameraId={selectedCamera} />
+            <VideoSegmentsList cameraId={selectedCamera} selectedCamera={selectedCamera} />
           </div>
         </>
       )}
