@@ -39,7 +39,7 @@ const VideoSegmentsList = ({ cameraId }) => {
   return (
     <div className="max-w-xl">
       {currentSegment && (
-        <div className="bg-white p-4 rounded-lg overflow-hidden">
+        <div className="bg-white p-4 rounded-lg overflow-hidden min-w-[310px] mb-4">
           <h2 className="text-xl font-semibold bg-black text-white px-4 py-2 mb-4 font-[900] -ml-4 -mt-4 w-[calc(100%+2rem)]">
             Đang xem: {currentSegment.description}
           </h2>
@@ -51,7 +51,7 @@ const VideoSegmentsList = ({ cameraId }) => {
           </div>
         </div>
       )}
-      <div className="mt-4 bg-white p-4 rounded-lg overflow-hidden">
+      <div className="bg-white p-4 rounded-lg overflow-hidden min-w-[310px]">
         <h2 className="text-xl font-semibold bg-black text-white px-4 py-2 mb-4 font-[900] -ml-4 -mt-4 w-[calc(100%+2rem)]">
           Đoạn video ngắn
         </h2>

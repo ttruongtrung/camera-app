@@ -85,6 +85,7 @@ app.use('/api/storage', express.static(path.join(__dirname, '..','public', 'vide
 app.get('/api/cameras', (req, res) => Camera.getAllCameras(req, res));
 app.post('/api/camera', customMiddleware, (req, res) => Camera.createCamera(req, res));
 app.put('/api/camera/:id', (req, res) => Camera.updateCamera(req, res));
+app.delete('/api/camera/:id', (req, res) => Camera.deleteCameraById(req, res));
 app.get('/api/camera/:cameraId/segments', (req, res) => VideoSegment.getVideoSegmentsByCameraId(req, res));
 app.post('/api/camera/:cameraId/start-capture', (req, res) => {
 	if (!isCapturing) {

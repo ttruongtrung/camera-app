@@ -6,10 +6,12 @@ import { PiWaveform } from 'react-icons/pi';
 import { MdOutlineModeEdit, MdOutlineDeleteOutline } from 'react-icons/md';
 import EditCameraModal from './EditCameraModal';
 import useCameras from '../hooks/useCameras';
+import DeleteCameraModal from './DeleteCameraModal';
 
 const CameraPanel = ({ camera, onClick }) => {
   const [isStreaming, setIsStreaming] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const { refetch } = useCameras();
 
   const handleStreaming = (e) => {
@@ -20,6 +22,12 @@ const CameraPanel = ({ camera, onClick }) => {
   const handleOpenEditModal = (e) => {
     e.stopPropagation();
     setOpenEditModal(true);
+  }
+
+
+  const handleOpenDeleteModal = (e) => {
+    e.stopPropagation();
+    setOpenDeleteModal(true);
   }
 
   const startStream = async () => {
@@ -56,6 +64,16 @@ const CameraPanel = ({ camera, onClick }) => {
     }
   }
 
+  const deleteCamera = async (data) => {
+    try {
+      const response = await axios.delete(`http://localhost:3001/api/camera/${camera.id}`);
+      console.log(response);
+      refetch();
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   return (
     <>
       <div
@@ -65,10 +83,10 @@ const CameraPanel = ({ camera, onClick }) => {
         <div className="flex gap-3 justify-between items-center mb-2">
           <h2 className="text-lg text-gray-500 font-bold ">{camera.name}</h2>
           <div className="flex gap-2">
-            <div className="text-xl hover:opacity-40 transition" onClick={handleOpenEditModal}>
+            <div className="text-xl hover:opacity-40 transition text-yellow-500" onClick={handleOpenEditModal}>
               <MdOutlineModeEdit />
             </div>
-            <div className="text-xl hover:opacity-40 transition">
+            <div className="text-xl hover:opacity-40 transition text-red-500" onClick={handleOpenDeleteModal}>
               <MdOutlineDeleteOutline />
             </div>
           </div>
@@ -114,6 +132,7 @@ const CameraPanel = ({ camera, onClick }) => {
         </div>
       </div>
       <EditCameraModal isOpen={openEditModal} onClose={() => setOpenEditModal(false)} onSubmit={updateCamera} camera={camera} />
+      <DeleteCameraModal isOpen={openDeleteModal} onClose={() => setOpenDeleteModal(false)} onSubmit={deleteCamera} />
     </>
   );
 };
