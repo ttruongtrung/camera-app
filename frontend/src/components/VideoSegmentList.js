@@ -37,13 +37,13 @@ const VideoSegmentsList = ({ cameraId }) => {
   };
 
   return (
-    <div className="max-w-xl">
+    <div className="max-w-full md:max-w-xl">
       {currentSegment && (
         <div className="bg-white p-4 rounded-lg overflow-hidden min-w-[310px] mb-4">
           <h2 className="text-xl font-semibold bg-black text-white px-4 py-2 mb-4 font-[900] -ml-4 -mt-4 w-[calc(100%+2rem)]">
             Đang xem: {currentSegment.description}
           </h2>
-          <div className="rounded-lg overflow-hidden w-[500px] max-w-xl">
+          <div className="rounded-lg overflow-hidden w-[500px] max-w-full md:max-w-xl">
             <video controls className="w-full" key={currentSegment.description}>
               <source src={videoUrl + currentSegment.description} type="video/mp4" />
               Your browser does not support the video tag.

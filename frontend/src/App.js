@@ -8,7 +8,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/admin/*" element={<AdminApp />}></Route>
-        <Route path="/camera/:cameraId/segments" element={<VideoSegmentPage />}></Route>
+        <Route path="/camera/:cameraId" element={<VideoSegmentPage />}></Route>
       </Routes>
     </BrowserRouter>
   );
