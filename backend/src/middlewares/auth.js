@@ -1,4 +1,4 @@
-const ACCESS_TOKEN = 'avc';
+const ACCESS_TOKEN = "YWRtaW46QWRtaW5fMTJBZG1pbg==";
 
 exports.authenticate = (req, res) => {
     if (req.body.grant_type != "client_credentials") {

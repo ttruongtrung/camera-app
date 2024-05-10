@@ -13,7 +13,6 @@ const useProtectedRoute = () => {
     }
   }, [accessToken, navigate]);
 
-  // Return any additional data or logic you need for the protected route
   return {};
 };
 

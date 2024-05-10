@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import CameraList from '../components/CameraList';
 import CameraModal from '../components/CameraModal';
@@ -6,12 +6,19 @@ import VideoSegmentsList from '../components/VideoSegmentList';
 import useCameras from '../hooks/useCameras';
 import Loading from '../components/Loading';
 import useProtectedRoute from '../auth/useProtectedRoute';
+import { AuthContext } from '../auth/AuthContext';
 
 const AdminPage = () => {
-  //useProtectedRoute(); 
+  useProtectedRoute(); 
   const [selectedCamera, setSelectedCamera] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { data: cameras, isLoading, refetch } = useCameras();
+  const { accessToken } = useContext(AuthContext);
+  const config = {
+    headers: {
+      'Authorization': `Bearer ${accessToken}`
+    }
+  };
 
   console.log(cameras);
 

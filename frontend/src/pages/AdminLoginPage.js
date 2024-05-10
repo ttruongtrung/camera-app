@@ -32,7 +32,7 @@ const AdminLoginPage = () => {
         const data = await response.json();
         console.log('Login successful', data?.access_token);
         login(data?.access_token);
-        navigate('/admin/manage');
+        navigate('/admin/cameras');
       } else {
         console.log('Login failed');
         // Perform any logic when login fails
