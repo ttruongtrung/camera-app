@@ -5,8 +5,10 @@ import CameraModal from '../components/CameraModal';
 import VideoSegmentsList from '../components/VideoSegmentList';
 import useCameras from '../hooks/useCameras';
 import Loading from '../components/Loading';
+import useProtectedRoute from '../auth/useProtectedRoute';
 
 const AdminPage = () => {
+  useProtectedRoute(); 
   const [selectedCamera, setSelectedCamera] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { data: cameras, isLoading, refetch } = useCameras();
