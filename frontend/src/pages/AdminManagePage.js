@@ -8,7 +8,7 @@ import Loading from '../components/Loading';
 import useProtectedRoute from '../auth/useProtectedRoute';
 
 const AdminPage = () => {
-  useProtectedRoute(); 
+  //useProtectedRoute(); 
   const [selectedCamera, setSelectedCamera] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { data: cameras, isLoading, refetch } = useCameras();

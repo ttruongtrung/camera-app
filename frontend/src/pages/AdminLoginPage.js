@@ -2,19 +2,21 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useContext } from 'react';
 import { AuthContext } from '../auth/AuthContext';
+import { CgLogIn } from "react-icons/cg";
+import { MdAdminPanelSettings } from "react-icons/md";
 
 const AdminLoginPage = () => {
   const [user, setUser] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
-  const basePath = process.env.REACT_APP_API_URL;
+  const apiPath = process.env.REACT_APP_BE_API_URL;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await fetch(`${basePath}api/login`, {
+      const response = await fetch(`${apiPath}/api/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -46,29 +48,39 @@ const AdminLoginPage = () => {
   };
 
   return (
-    <div id="admin-login">
-      <div id="login-wrapper">
-        <h4>Login to Admin</h4>
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="user">Username:</label>
+    <div className="flex flex-col justify-center items-center h-screen bg-gray-100">
+      <div className="bg-white p-10 rounded-lg border border-gray-300">
+        <h4 className="flex items-center gap-6 text-lg font-[700] mb-5">
+          <MdAdminPanelSettings size={64}/>
+           Login as Administrator
+          </h4>
+        <form onSubmit={handleSubmit} className="flex flex-col items-center gap-4 mt-4">
+          <div className="flex items-center justify-between">
+            <label htmlFor="user" className="font-semibold mb-1">Tài khoản:</label>
             <input
               type="user"
               id="user"
               value={user}
               onChange={(e) => setUser(e.target.value)}
+              className="w-2/3 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:border-blue-500"
             />
           </div>
-          <div className="form-group">
-            <label htmlFor="password">Password:</label>
+          <div className="flex items-center justify-between">
+            <label htmlFor="password" className="font-semibold mb-1">Mật khẩu:</label>
             <input
               type="password"
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              className="w-2/3 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:border-blue-500"
             />
           </div>
-            <button type="submit">Login</button>
+            <button 
+              type="submit"
+              className="flex items-center gap-4 mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            >
+              <CgLogIn />
+              Đăng nhập</button>
         </form>
       </div>  
     </div>

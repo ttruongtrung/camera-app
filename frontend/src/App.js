@@ -1,5 +1,6 @@
 import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import AdminLoginPage from './pages/AdminLoginPage';
 import AdminManagePage from './pages/AdminManagePage';
 import VideoSegmentPage from './pages/VideoSegmentsPage';
 import { AuthProvider } from './auth/AuthContext';
@@ -21,6 +22,7 @@ const AdminApp = () => {
       <AuthProvider>
         <Routes>
           <Route path="/cameras" element={<AdminManagePage />}></Route>
+          <Route path="/*" element={<AdminLoginPage />}></Route>
         </Routes>
       </AuthProvider>
     </>
