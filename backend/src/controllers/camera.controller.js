@@ -1,5 +1,7 @@
 const db = require('../models/dbconnect');
 const Camera = db.camera;
+const CAMERA_STATUS = require('../constants');
+
 
 module.exports = {
   createCamera: async (req, res) => {
@@ -33,7 +35,6 @@ module.exports = {
 
   getCameraById: async (req, res) => {
     const id = req.params.id;
-
     try {
       const camera = await Camera.findByPk(id);
       if (!camera) {
@@ -90,5 +91,56 @@ module.exports = {
       console.error('Error deleting camera:', error);
       res.status(500).send({ message: 'Internal server error' });
     }
+  },
+
+  /**
+ * Lấy thông tin của một camera dựa trên ID.
+ * @param {number} cameraId - ID của camera cần lấy thông tin.
+ */
+
+  async getCameraInformation(cameraId) {
+    try {
+      const camera = await Camera.findOne({ where: { id: cameraId } });
+      return camera;
+    } catch (error) {
+      console.error('Error fetching camera information:', error);
+      throw error;
+    }
+  },
+
+
+  /**
+ * Cập nhật trạng thái isCapturing của một camera và cập nhật trạng thái status.
+ * Nếu isCapturing là true, status sẽ được cập nhật thành 'starting', ngược lại status không thay đổi.
+ * @param {number} cameraId - ID của camera cần cập nhật trạng thái.
+ * @param {boolean} isCapturing - Trạng thái isCapturing mới của camera.
+ * @throws {Error} Nếu không tìm thấy camera với ID tương ứng.
+ * @throws {Error} Nếu có lỗi xảy ra trong quá trình cập nhật.
+ */
+  async updateCameraStatus(cameraId, isCapturing) {
+    try {
+      // Tìm camera dựa trên cameraId
+      const camera = await Camera.findByPk(cameraId);
+      if (!camera) {
+        throw new Error(`Camera with ID ${cameraId} not found.`);
+      }
+
+      // Cập nhật trạng thái isCapturing và status
+      camera.isCapturing = isCapturing;
+      if (isCapturing) {
+        camera.status = CAMERA_STATUS.STARTING;
+      }
+      else {
+        camera.status = CAMERA_STATUS.READY;
+      }
+
+      await camera.save();
+
+      console.log(`Camera ${cameraId} status updated successfully.`);
+    } catch (error) {
+      console.error(`Error updating camera ${cameraId} status:`, error);
+      throw error;
+    }
   }
+
 };
