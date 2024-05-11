@@ -8,6 +8,7 @@ const VideoSegment = require('./controllers/videoSegment.controller');
 const moment = require('moment');
 let cameraStatus = {};
 let cameraId;
+const CAMERA_STATUS = require('./constants');
 
 const app = express();
 app.use(cors());
@@ -21,6 +22,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const db = require('./models/dbconnect');
+const cameraController = require('./controllers/camera.controller');
 db.sequelize.sync()
 	.then(() => {
 		console.log("Synced db.");
@@ -31,7 +33,7 @@ db.sequelize.sync()
 
 const customMiddleware = (req, res, next) => {
 	console.log('Custom middleware called', req.body);
-	next(); 
+	next();
 };
 
 // Function to start capturing frames from RTSP stream and save to file
@@ -42,7 +44,6 @@ function startCaptureStream(cameraId, rtsp) {
 	const fileName = `data_camera${cameraId}_${Date.now()}.mp4`;
 	const outputPath = path.join(__dirname, '..', 'public', 'videos', fileName);
 	// const rtsp_url = 'rtsp://admin:L2427AA6@192.168.1.13:554/cam/realmonitor?channel=1&subtype=0&unicast=true&proto=Onvif';
-	// const rtsp_url = 'public/videos/video.mp4';
 	const rtsp_url = rtsp;
 	const args = [
 		'-copyts',
@@ -63,15 +64,15 @@ function startCaptureStream(cameraId, rtsp) {
 
 	captureProcess.on('close', (code) => {
 		console.log(`ffmpeg process exited with code ${code}`);
-    const data = VideoSegment.createWithRawData({
-      cameraId: cameraId,
-      description: fileName,
-      startTime: '2024-05-05 14:46:16.765 +00:00',
+		const data = VideoSegment.createWithRawData({
+			cameraId: cameraId,
+			description: fileName,
+			startTime: '2024-05-05 14:46:16.765 +00:00',
 			endTime: '2024-05-05 14:46:16.765 +00:00',
-      // endTime: moment().format('DD/MM/YYYY - HH:mm:ss'),
-      videoFile: outputPath
-    });
-    console.log('Finish write to record: ', data);
+			// endTime: moment().format('DD/MM/YYYY - HH:mm:ss'),
+			videoFile: outputPath
+		});
+		console.log('Finish write to record: ', data);
 	});
 }
 
@@ -86,59 +87,89 @@ app.get('/api/testdb', (req, res) => {
 	console.log('Finish write to record: ', data);
 });
 
-app.use('/api/storage', express.static(path.join(__dirname, '..','public', 'videos')));
+app.use('/api/storage', express.static(path.join(__dirname, '..', 'public', 'videos')));
 app.get('/api/cameras', (req, res) => Camera.getAllCameras(req, res));
 app.post('/api/camera', customMiddleware, (req, res) => Camera.createCamera(req, res));
 app.put('/api/camera/:id', (req, res) => Camera.updateCamera(req, res));
 app.delete('/api/camera/:id', (req, res) => Camera.deleteCameraById(req, res));
 app.get('/api/camera/:cameraId/segments', (req, res) => VideoSegment.getVideoSegmentsByCameraId(req, res));
 
-// Start capturering API
+/**
+ * Start capturing API
+ * 
+ * @description This API endpoint is used to start the capturing process for a specified camera.
+ * 
+ * @param {string} req.params.cameraId - The ID of the camera for which the capturing process needs to be started.
+ * 
+ * @returns {object} Response object with status and message.
+ */
+
 app.post('/api/camera/:cameraId/start-capture', (req, res) => {
-	const cameraIdThread = req.params.cameraId;
-	const rtsp  = 'public/videos/video' + cameraIdThread + '.mp4';
-    if (!cameraStatus.hasOwnProperty(cameraIdThread)) {
-        cameraStatus[cameraIdThread] = {
-            isCapturing: false, 
-            intervalId: null 
-        };
-    }
+	const cameraId = req.params.cameraId;
+	const rtsp = 'public/videos/video' + cameraId + '.mp4';
+	const cameraStatusInfo = cameraController.getCameraInformation(cameraId);
 
-    if (!cameraStatus[cameraIdThread].isCapturing) { 
-        cameraStatus[cameraIdThread].isCapturing = true; 
-        startCaptureStream(cameraIdThread); 
-        cameraStatus[cameraIdThread].intervalId = setInterval(() => {
-            startCaptureStream(cameraIdThread, rtsp);
-        }, 60000); 
+	if (cameraStatusInfo) {
+		const status = cameraStatusInfo.status;
+		if (cameraStatusInfo.status == CAMERA_STATUS.CREATE || cameraStatusInfo.status == CAMERA_STATUS.READY) _
+		{
+			if (!cameraStatus.hasOwnProperty(cameraId)) {
+				cameraStatus[cameraId] = {
+					isCapturing: false,
+					intervalId: null
+				};
+			}
 
-        res.status(200).send(`Capture process started successfully for camera ${cameraIdThread}.`);
-    } else {
-        res.status(400).send(`Capture process is already running for camera ${cameraIdThread}.`);
-    }
+			if (!cameraStatus[cameraId].isCapturing) {
+				cameraStatus[cameraId].isCapturing = true;
+				startCaptureStream(cameraId);
+				cameraStatus[cameraId].intervalId = setInterval(() => {
+					startCaptureStream(cameraId, rtsp);
+					cameraController.updateCameraStatus(cameraId, cameraStatus[cameraId].isCapturing);
+				}, 60000);
+
+				res.status(200).send(`Capture process started successfully for camera ${cameraId}.`);
+			} else {
+				res.status(400).send(`Capture process is already running for camera ${cameraId}.`);
+			}
+		}
+	}
+	
 });
 
-// Stop capturing API
-app.post('/api/camera/:cameraId/stop-capture', (req, res) => {
-    const cameraId = req.params.cameraId; // Get the cameraId from the request parameters
-    // Check if the camera status is stored
-    if (cameraStatus.hasOwnProperty(cameraId)) {
-        // Check if the capture process is running for the specified camera
-        if (cameraStatus[cameraId].isCapturing) {
-            // Clear the interval for the camera
-            clearInterval(cameraStatus[cameraId].intervalId);
-            // Set the capture status for the camera to false
-            cameraStatus[cameraId].isCapturing = false;
+/**
+ * Stop capturing API
+ * 
+ * @description This API endpoint is used to stop the capturing process for a specified camera.
+ * 
+ * @param {string} req.params.cameraId - The ID of the camera for which the capturing process needs to be stopped.
+ * 
+ * @returns {object} Response object with status and message.
+ */
+app.post('/api/camera/:cameraId/stop-capture', async (req, res) => {
+	const cameraId = req.params.cameraId; // Get the cameraId from the request parameters
+	// Check if the camera status is stored
 
-            // Send a success response
-            res.status(200).send(`Capture process stopped successfully for camera ${cameraId}.`);
-        } else {
-            // If the capture process is not running, send an error response
-            res.status(400).send(`Capture process is not running for camera ${cameraId}.`);
-        }
-    } else {
-        // If the camera status is not stored, send an error response
-        res.status(400).send(`Camera ${cameraId} is not found.`);
-    }
+	if (cameraStatus.hasOwnProperty(cameraId)) {
+		// Check if the capture process is running for the specified camera
+		if (cameraStatus[cameraId].isCapturing) {
+			// Clear the interval for the camera
+			clearInterval(cameraStatus[cameraId].intervalId);
+			// Set the capture status for the camera to false
+			cameraStatus[cameraId].isCapturing = false;
+			await cameraController.updateCameraStatus(cameraId, cameraStatus[cameraId].isCapturing)
+
+			// Send a success response
+			res.status(200).send(`Capture process stopped successfully for camera ${cameraId}.`);
+		} else {
+			// If the capture process is not running, send an error response
+			res.status(400).send(`Capture process is not running for camera ${cameraId}.`);
+		}
+
+	} else {
+		// If the camera status is not stored, send an error response
+		res.status(400).send(`Camera ${cameraId} is not found.`);
+	}
 });
 
 app.listen(port, () => {
