@@ -9,6 +9,7 @@ const moment = require('moment');
 let cameraStatus = {};
 let cameraId;
 const CAMERA_STATUS = require('./constants');
+let intervalTime = 60000;
 
 const app = express();
 app.use(cors());
@@ -64,11 +65,15 @@ function startCaptureStream(cameraId, rtsp) {
 
 	captureProcess.on('close', (code) => {
 		console.log(`ffmpeg process exited with code ${code}`);
+		const startTime = moment();
+		const endTime = moment(startTime).add(intervalTime, 'milliseconds')
 		const data = VideoSegment.createWithRawData({
 			cameraId: cameraId,
 			description: fileName,
-			startTime: '2024-05-05 14:46:16.765 +00:00',
-			endTime: '2024-05-05 14:46:16.765 +00:00',
+			// startTime: '2024-05-05 14:46:16.765 +00:00',
+			// endTime: '2024-05-05 14:46:16.765 +00:00',
+			startTime : startTime,
+			endTime : endTime,
 			// endTime: moment().format('DD/MM/YYYY - HH:mm:ss'),
 			videoFile: outputPath
 		});
@@ -124,10 +129,9 @@ app.post('/api/camera/:cameraId/start-capture', (req, res) => {
 				cameraStatus[cameraId].isCapturing = true;
 				startCaptureStream(cameraId);
 				cameraStatus[cameraId].intervalId = setInterval(() => {
-					startCaptureStream(cameraId, rtsp);
-					cameraController.updateCameraStatus(cameraId, cameraStatus[cameraId].isCapturing);
-				}, 60000);
-
+					startCaptureStream(cameraId, rtsp);				
+				}, intervalTime);
+				cameraController.updateCameraStatus(cameraId, cameraStatus[cameraId].isCapturing);
 				res.status(200).send(`Capture process started successfully for camera ${cameraId}.`);
 			} else {
 				res.status(400).send(`Capture process is already running for camera ${cameraId}.`);
