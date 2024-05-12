@@ -6,6 +6,7 @@ const path = require('path');
 const Camera = require('./controllers/camera.controller');
 const VideoSegment = require('./controllers/videoSegment.controller');
 const moment = require('moment');
+const { authenticate, authorize } = require('./middlewares/auth');
 let cameraStatus = {};
 let cameraId;
 const CAMERA_STATUS = require('./constants');
@@ -81,19 +82,10 @@ function startCaptureStream(cameraId, rtsp) {
 	});
 }
 
-app.get('/api/testdb', (req, res) => {
-	const data = VideoSegment.createWithRawData({
-		cameraId: cameraId,
-		description: 'testFile',
-		startTime: '',
-		endTime: '',
-		videoFile: 'testVideo File'
-	});
-	console.log('Finish write to record: ', data);
-});
+app.post('/api/login', authenticate);
 
 app.use('/api/storage', express.static(path.join(__dirname, '..', 'public', 'videos')));
-app.get('/api/cameras', (req, res) => Camera.getAllCameras(req, res));
+app.get('/api/cameras', authorize, (req, res) => Camera.getAllCameras(req, res));
 app.post('/api/camera', customMiddleware, (req, res) => Camera.createCamera(req, res));
 app.put('/api/camera/:id', (req, res) => Camera.updateCamera(req, res));
 app.delete('/api/camera/:id', (req, res) => Camera.deleteCameraById(req, res));
