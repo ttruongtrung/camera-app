@@ -1,7 +1,12 @@
 const db = require('../models/dbconnect');
 const Camera = db.camera;
+const Videos = db.videoSegment
 const CAMERA_STATUS = require('../constants');
-
+const cron = require('node-cron');
+const moment = require('moment');
+const { Op } = require('sequelize');
+const path = require('path');
+const fs = require('fs');
 
 module.exports = {
   createCamera: async (req, res) => {
@@ -141,6 +146,64 @@ module.exports = {
       console.error(`Error updating camera ${cameraId} status:`, error);
       throw error;
     }
-  }
+  },
 
+  /**
+  * Hàm để xóa các bản ghi video cũ hơn 4 tiếng tính từ thời điểm hiện tại.
+  * 
+  */
+  async cleanVideos() {
+    try {
+      // Lấy thời gian hiện tại và trừ đi 4 tiếng
+      const fourHoursAgo = moment().subtract(4, 'hours');
+
+      // Tìm và xóa các bản ghi từ bảng `Video` có trường `createdAt` nhỏ hơn thời gian đã tính toán
+      const videos = await Videos.findAll({
+        where: {
+          createdAt: {
+            [Op.lt]: fourHoursAgo
+          }
+        },
+        attributes: ['description']
+      });
+
+      // Lấy danh sách tên video
+      const videoNames = videos.map(video => video.description);
+
+      // Xóa các video từ cơ sở dữ liệu
+      await Videos.destroy({
+        where: {
+          createdAt: {
+            [Op.lt]: fourHoursAgo
+          }
+        }
+      });
+
+      // Xóa các video từ local filesystem
+      const outputPath = 'D:/camera-app/camera-app/backend/public/videos/';
+      const deleteFile = async (videoNames) => {
+        if (videoNames.length === 0) return;
+        const videoName = videoNames.shift();
+        const videoPath = outputPath + videoName;
+        console.log(videoPath);
+        try {
+          if (fs.existsSync(videoPath)) {
+            fs.unlinkSync(videoPath); // Xóa video từ local filesystem
+            console.log(`Deleted video ${videoName} from local filesystem.`);
+          } else {
+            console.log(`File ${videoName} không tồn tại.`);
+          }
+        } catch (err) {
+          console.error(`Error deleting video ${videoName} from local filesystem:`, err);
+        }
+        await deleteFile(videoNames);
+      };
+
+      await deleteFile([...videoNames]); // Gọi hàm đệ quy để xóa các tệp
+      console.log(`Deleted ${videoNames.length} old videos.`);
+    } catch (error) {
+      console.error('Error occurred while deleting old videos:', error);
+      throw error;
+    }
+  }
 };
