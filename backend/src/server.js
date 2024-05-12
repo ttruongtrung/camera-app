@@ -116,7 +116,7 @@ app.post('/api/camera/:cameraId/start-capture', (req, res) => {
 
 	if (cameraStatusInfo) {
 		const status = cameraStatusInfo.status;
-		if (cameraStatusInfo.status == CAMERA_STATUS.CREATE || cameraStatusInfo.status == CAMERA_STATUS.READY) _
+		if (status == CAMERA_STATUS.CREATE || status == CAMERA_STATUS.READY)
 		{
 			if (!cameraStatus.hasOwnProperty(cameraId)) {
 				cameraStatus[cameraId] = {

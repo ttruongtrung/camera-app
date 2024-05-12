@@ -7,9 +7,10 @@ import { MdOutlineModeEdit, MdOutlineDeleteOutline } from 'react-icons/md';
 import EditCameraModal from './EditCameraModal';
 import useCameras from '../hooks/useCameras';
 import DeleteCameraModal from './DeleteCameraModal';
+import { CAMERA_STATUS } from '../constants/Camera';
 
 const CameraPanel = ({ camera, onClick }) => {
-  const [isStreaming, setIsStreaming] = useState(false);
+  const [isStreaming, setIsStreaming] = useState(camera.status === CAMERA_STATUS.STARTING);
   const [openEditModal, setOpenEditModal] = useState(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const { refetch } = useCameras();
