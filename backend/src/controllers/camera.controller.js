@@ -180,7 +180,15 @@ module.exports = {
       });
 
       // Xóa các video từ local filesystem
-      const outputPath = 'D:/camera-app/camera-app/backend/public/videos/';
+
+      const projectRoot = process.cwd();
+
+      const filePath = '/public/videos/';
+
+      const outputPath = projectRoot + filePath;
+
+      console.log("outputPath:", outputPath);
+      // const outputPath = 'D:/camera-app/camera-app/backend/public/videos/';
       const deleteFile = async (videoNames) => {
         if (videoNames.length === 0) return;
         const videoName = videoNames.shift();

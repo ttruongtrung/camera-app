@@ -10,7 +10,7 @@ const { authenticate, authorize } = require('./middlewares/auth');
 let cameraStatus = {};
 let cameraId;
 const CAMERA_STATUS = require('./constants');
-let intervalTime = 5000;
+let intervalTime = 60000;
 
 const app = express();
 app.use(cors());
@@ -170,6 +170,6 @@ app.post('/api/camera/:cameraId/stop-capture', async (req, res) => {
 
 app.listen(port, () => {
 	console.log(`Server running on port ${port}`);
-	setInterval(cameraController.cleanVideos, 300000)
+	setInterval(cameraController.cleanVideos, intervalTime)
 	console.log(`clean successfully`);
 });
