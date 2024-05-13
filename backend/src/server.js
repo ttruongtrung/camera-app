@@ -10,7 +10,7 @@ const { authenticate, authorize } = require('./middlewares/auth');
 let cameraStatus = {};
 let cameraId;
 const CAMERA_STATUS = require('./constants');
-let intervalTime = 60000;
+let intervalTime = 3000;
 
 const app = express();
 app.use(cors());
@@ -71,11 +71,8 @@ function startCaptureStream(cameraId, rtsp) {
 		const data = VideoSegment.createWithRawData({
 			cameraId: cameraId,
 			description: fileName,
-			// startTime: '2024-05-05 14:46:16.765 +00:00',
-			// endTime: '2024-05-05 14:46:16.765 +00:00',
-			startTime : startTime,
-			endTime : endTime,
-			// endTime: moment().format('DD/MM/YYYY - HH:mm:ss'),
+			startTime: startTime,
+			endTime: endTime,
 			videoFile: outputPath
 		});
 		console.log('Finish write to record: ', data);
@@ -101,36 +98,27 @@ app.get('/api/camera/:cameraId/segments', (req, res) => VideoSegment.getVideoSeg
  * @returns {object} Response object with status and message.
  */
 
-app.post('/api/camera/:cameraId/start-capture', (req, res) => {
+app.post('/api/camera/:cameraId/start-capture', async (req, res) => {
 	const cameraId = req.params.cameraId;
 	const rtsp = 'public/videos/video' + cameraId + '.mp4';
-	const cameraStatusInfo = cameraController.getCameraInformation(cameraId);
-
-	if (cameraStatusInfo) {
-		const status = cameraStatusInfo.status;
-		if (status == CAMERA_STATUS.CREATE || status == CAMERA_STATUS.READY)
-		{
-			if (!cameraStatus.hasOwnProperty(cameraId)) {
-				cameraStatus[cameraId] = {
-					isCapturing: false,
-					intervalId: null
-				};
-			}
-
-			if (!cameraStatus[cameraId].isCapturing) {
-				cameraStatus[cameraId].isCapturing = true;
-				startCaptureStream(cameraId);
-				cameraStatus[cameraId].intervalId = setInterval(() => {
-					startCaptureStream(cameraId, rtsp);				
-				}, intervalTime);
-				cameraController.updateCameraStatus(cameraId, cameraStatus[cameraId].isCapturing);
-				res.status(200).send(`Capture process started successfully for camera ${cameraId}.`);
-			} else {
-				res.status(400).send(`Capture process is already running for camera ${cameraId}.`);
-			}
-		}
+	if (!cameraStatus.hasOwnProperty(cameraId)) {
+		cameraStatus[cameraId] = {
+			isCapturing: false,
+			intervalId: null
+		};
 	}
-	
+
+	if (!cameraStatus[cameraId].isCapturing) {
+		cameraStatus[cameraId].isCapturing = true;
+		startCaptureStream(cameraId);
+		cameraStatus[cameraId].intervalId = setInterval(() => {
+			startCaptureStream(cameraId, rtsp);
+		}, intervalTime);
+		await cameraController.updateCameraStatus(cameraId, cameraStatus[cameraId].isCapturing);
+		res.status(200).send(`Capture process started successfully for camera ${cameraId}.`);
+	} else {
+		res.status(400).send(`Capture process is already running for camera ${cameraId}.`);
+	}
 });
 
 /**
@@ -172,4 +160,7 @@ app.listen(port, () => {
 	console.log(`Server running on port ${port}`);
 	setInterval(cameraController.cleanVideos, intervalTime)
 	console.log(`clean successfully`);
+
+	// Reset state all cameray to ready when start server
+	cameraController.resetAllCamerasStatusToReady()
 });

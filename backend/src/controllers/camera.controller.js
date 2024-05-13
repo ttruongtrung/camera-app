@@ -7,6 +7,7 @@ const moment = require('moment');
 const { Op } = require('sequelize');
 const path = require('path');
 const fs = require('fs');
+const process = require('process');
 
 module.exports = {
   createCamera: async (req, res) => {
@@ -148,6 +149,7 @@ module.exports = {
     }
   },
 
+
   /**
   * Hàm để xóa các bản ghi video cũ hơn 4 tiếng tính từ thời điểm hiện tại.
   * 
@@ -183,12 +185,11 @@ module.exports = {
 
       const projectRoot = process.cwd();
 
-      const filePath = '/public/videos/';
+      const filePath = '\\public\\videos\\';
 
       const outputPath = projectRoot + filePath;
 
       console.log("outputPath:", outputPath);
-      // const outputPath = 'D:/camera-app/camera-app/backend/public/videos/';
       const deleteFile = async (videoNames) => {
         if (videoNames.length === 0) return;
         const videoName = videoNames.shift();
@@ -213,5 +214,22 @@ module.exports = {
       console.error('Error occurred while deleting old videos:', error);
       throw error;
     }
+  },
+
+  // Reset state all camera to ready
+  async resetAllCamerasStatusToReady() {
+    try {
+      const cameras = await Camera.findAll();
+      for (const camera of cameras) {
+        camera.status = CAMERA_STATUS.READY;
+        await camera.save();
+      }
+
+      console.log("All cameras status reset to READY successfully.");
+    } catch (error) {
+      console.error("Error resetting cameras status:", error);
+      throw error;
+    }
   }
+
 };
