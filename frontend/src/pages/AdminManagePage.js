@@ -19,12 +19,11 @@ const AdminPage = () => {
       'Authorization': `Bearer ${accessToken}`
     }
   };
-
-  console.log(cameras);
+  const apiPath = process.env.REACT_APP_BE_API_URL;
 
   const handleAddCamera = async (camera) => {
     try {
-      await axios.post('http://localhost:3001/api/camera', camera);
+      await axios.post(`${apiPath}/api/camera`, camera);
       console.log('Camera added:', camera);
       refetch();
     } catch (error) {

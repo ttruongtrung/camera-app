@@ -3,10 +3,11 @@ import axios from 'axios';
 import { BsFillPlayCircleFill, BsPauseCircleFill } from 'react-icons/bs';
 import { SiStatuspal } from 'react-icons/si';
 import { PiWaveform } from 'react-icons/pi';
-import { MdOutlineModeEdit, MdOutlineDeleteOutline } from 'react-icons/md';
+import { MdOutlineModeEdit, MdOutlineDeleteOutline, MdOutlineQrCode } from 'react-icons/md';
 import EditCameraModal from './EditCameraModal';
 import useCameras from '../hooks/useCameras';
 import DeleteCameraModal from './DeleteCameraModal';
+import QrModal from './QrModal';
 import { CAMERA_STATUS } from '../constants/Camera';
 
 const CameraPanel = ({ camera, onClick }) => {
@@ -14,6 +15,9 @@ const CameraPanel = ({ camera, onClick }) => {
   const [openEditModal, setOpenEditModal] = useState(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const { refetch } = useCameras();
+  const apiPath = process.env.REACT_APP_BE_API_URL;
+  const [qrCodeValue, setQrCodeValue] = useState('');
+  const [openQrModal, setOpenQrModal] = useState(false);
 
   const handleStreaming = (e) => {
     e.stopPropagation();
@@ -31,10 +35,16 @@ const CameraPanel = ({ camera, onClick }) => {
     setOpenDeleteModal(true);
   }
 
+  const handleGenerateQrCode = () => {
+    const link = `${apiPath}/api/camera/${camera.id}/segments`
+    setQrCodeValue(link);
+    setOpenQrModal(true);
+  }
+
   const startStream = async () => {
     try {
       const response = await axios.post(
-        `http://localhost:3001/api/camera/${camera.id}/start-capture`
+        `${apiPath}/api/camera/${camera.id}/start-capture`
       );
       console.log('Start stream', response);
       setIsStreaming(true);
@@ -46,7 +56,7 @@ const CameraPanel = ({ camera, onClick }) => {
   const stopStream = async () => {
     try {
       const response = await axios.post(
-        `http://localhost:3001/api/camera/${camera.id}/stop-capture`
+        `${apiPath}/api/camera/${camera.id}/stop-capture`
       );
       console.log('Stop stream', response);
       setIsStreaming(false);
@@ -57,7 +67,7 @@ const CameraPanel = ({ camera, onClick }) => {
 
   const updateCamera = async (data) => {
     try {
-      const response = await axios.put(`http://localhost:3001/api/camera/${camera.id}`, data);
+      const response = await axios.put(`${apiPath}/api/camera/${camera.id}`, data);
       console.log(response);
       refetch();
     } catch (error) {
@@ -67,7 +77,7 @@ const CameraPanel = ({ camera, onClick }) => {
 
   const deleteCamera = async (data) => {
     try {
-      const response = await axios.delete(`http://localhost:3001/api/camera/${camera.id}`);
+      const response = await axios.delete(`${apiPath}/api/camera/${camera.id}`);
       console.log(response);
       refetch();
     } catch (error) {
@@ -84,11 +94,13 @@ const CameraPanel = ({ camera, onClick }) => {
         <div className="flex gap-3 justify-between items-center mb-2">
           <h2 className="text-lg text-gray-500 font-bold ">{camera.name}</h2>
           <div className="flex gap-2">
-            <div className="text-xl hover:opacity-40 transition text-yellow-500" onClick={handleOpenEditModal}>
+            <div className="flex hover:text-green-800 transition text-green-500" onClick={handleOpenEditModal}>
               <MdOutlineModeEdit />
+              <span className="text-sm font-bold underline">Sửa</span>
             </div>
-            <div className="text-xl hover:opacity-40 transition text-red-500" onClick={handleOpenDeleteModal}>
+            <div className="flex items-center hover:text-red-800 transition text-red-500" onClick={handleOpenDeleteModal}>
               <MdOutlineDeleteOutline />
+              <span className="text-sm font-bold underline">Xóa</span>
             </div>
           </div>
         </div>
@@ -116,6 +128,15 @@ const CameraPanel = ({ camera, onClick }) => {
                 {isStreaming ? 'Đang stream' : 'Tạm dừng'}
               </span>
             </div>
+            <div 
+              className="flex items-center gap-x-2 mt-2 text-blue-500"
+              onClick={handleGenerateQrCode}
+            >
+              <MdOutlineQrCode size={24} />
+              <span className="font-bold  text-sm underline">
+                Tạo QR code link
+              </span>
+            </div>
           </div>
           {/* <button className="mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
           Action
@@ -134,6 +155,7 @@ const CameraPanel = ({ camera, onClick }) => {
       </div>
       <EditCameraModal isOpen={openEditModal} onClose={() => setOpenEditModal(false)} onSubmit={updateCamera} camera={camera} />
       <DeleteCameraModal isOpen={openDeleteModal} onClose={() => setOpenDeleteModal(false)} onSubmit={deleteCamera} />
+      <QrModal isOpen={openQrModal} onClose={() => setOpenQrModal(false)} qrCodeValue={qrCodeValue} camera={camera}/>
     </>
   );
 };
