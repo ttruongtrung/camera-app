@@ -8,6 +8,7 @@ const { Op } = require('sequelize');
 const path = require('path');
 const fs = require('fs');
 const process = require('process');
+const { spawn } = require('child_process');
 
 module.exports = {
   createCamera: async (req, res) => {
@@ -230,6 +231,31 @@ module.exports = {
       console.error("Error resetting cameras status:", error);
       throw error;
     }
+  },
+
+  async checkRTSPStream(rtspUrl) {
+    return new Promise((resolve, reject) => {
+      const args = [
+        '-rtsp_transport', 'tcp',
+        '-i', rtspUrl,
+        '-t', '1',
+        '-f', 'null', '-'
+      ];
+      
+      const ffmpegProcess = spawn('ffmpeg', args);
+
+      ffmpegProcess.on('close', (code) => {
+        if (code === 0) {
+          resolve(true);
+        } else {
+          reject(new Error(`RTSP stream check failed with code ${code}`));
+        }
+      });
+  
+      ffmpegProcess.on('error', (err) => {
+        reject(err);
+      });
+    });
   }
 
 };

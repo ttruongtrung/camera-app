@@ -41,6 +41,17 @@ const CameraPanel = ({ camera, onClick }) => {
     setOpenQrModal(true);
   }
 
+  const handleCheckRTSPStream = async () => {
+    try {
+      const response = await axios.post(
+        `${apiPath}/api/camera/${camera.id}/check-rtsp`
+      );
+      console.log('check stream', response);
+    } catch (error) {
+      console.error('Error checking stream:', error);
+    }
+  }
+
   const startStream = async () => {
     try {
       const response = await axios.post(
@@ -142,7 +153,8 @@ const CameraPanel = ({ camera, onClick }) => {
           Action
         </button> */}
           <div
-            onClick={handleStreaming}
+            //onClick={handleStreaming}
+            onClick={handleCheckRTSPStream}
             className="cursor-pointer text-blue-500 hover:text-blue-700 transition duration-300 ease-in-out"
           >
             {!isStreaming ? (

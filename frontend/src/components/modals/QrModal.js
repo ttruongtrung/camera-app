@@ -68,7 +68,7 @@ const QrModal = ({ isOpen, onClose, qrCodeValue, camera }) => {
             </button>
             <button
               onClick={onClose}
-              className="px-4 py-2 font-bold text-sm text-white rounded-[24px] border border-2 border-emerald-500 text-emerald-500"
+              className="px-4 py-2 font-bold text-sm rounded-[24px] border border-2 border-emerald-500 text-emerald-500"
             >
               Đóng
             </button>

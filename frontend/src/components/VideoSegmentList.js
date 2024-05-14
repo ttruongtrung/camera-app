@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { LiaPhotoVideoSolid } from "react-icons/lia";
+import { FaDatabase } from "react-icons/fa";
 
 const VideoSegmentsList = ({ cameraId, selectedCamera, showDefault }) => {
   const [currentCamera, selectedCurrentCamera] = useState(null);
@@ -41,7 +42,7 @@ const VideoSegmentsList = ({ cameraId, selectedCamera, showDefault }) => {
 
   return (
     <div className="max-w-full md:max-w-xl">
-      {currentSegment && (
+      {currentSegment ? (
         <div className="bg-white p-4 rounded-lg overflow-hidden min-w-[310px] mb-4">
           <h2 className="text-xl font-semibold bg-black text-white px-4 py-2 mb-4 font-[900] -ml-4 -mt-4 w-[calc(100%+2rem)]">
             Đang xem: {currentSegment.description}
@@ -53,13 +54,26 @@ const VideoSegmentsList = ({ cameraId, selectedCamera, showDefault }) => {
             </video>
           </div>
         </div>
+      ) : (
+        <div className="bg-white p-4 rounded-lg overflow-hidden min-w-[310px] mb-4">
+          <h2 className="text-xl font-semibold bg-black text-white px-4 py-2 mb-4 font-[900] -ml-4 -mt-4 w-[calc(100%+2rem)]">
+            Đang xem: Bạn chưa chọn video nào
+          </h2>
+          <div className="rounded-lg overflow-hidden w-[500px] max-w-full md:max-w-xl">
+            <div className="h-[250px] bg-gray-400 flex items-center justify-center gap-4">
+                <div className="w-8 h-8 rounded-full bg-white"></div>
+                <div className="w-8 h-8 rounded-full bg-white"></div>
+                <div className="w-8 h-8 rounded-full bg-white"></div>
+            </div>
+          </div>
+        </div>
       )}
       <div className="bg-white p-4 rounded-lg overflow-hidden min-w-[310px]">
         <h2 className="text-xl font-semibold bg-black text-white px-4 py-2 mb-4 font-[900] -ml-4 -mt-4 w-[calc(100%+2rem)]">
           Đoạn video ngắn
         </h2>
         <div className="flex flex-col items-center gap-2">
-          {segments.map((segment, index) => (
+          {segments.length > 0 ? (segments.map((segment, index) => (
             <div 
               key={index} onClick={() => handleSegmentClick(segment)}
               className={`flex gap-2 max-w-96 items-center border border-gray-300 rounded-lg px-4 
@@ -74,7 +88,12 @@ const VideoSegmentsList = ({ cameraId, selectedCamera, showDefault }) => {
               </div>
               
             </div>
-          ))}
+          ))) :(
+            <div className="flex items-center gap-4 text-gray-500">
+              <FaDatabase />
+              Chưa có video nào
+            </div>
+          )}
         </div>
       </div> 
     </div>

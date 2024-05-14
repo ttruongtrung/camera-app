@@ -156,9 +156,24 @@ app.post('/api/camera/:cameraId/stop-capture', async (req, res) => {
 	}
 });
 
+app.post('/api/camera/:cameraId/check-rtsp', async (req, res) => {
+	try {
+		console.log('..........start check rtsp');
+		const rtsp_url = 'rtsp://admin:L2427AA6@192.168.1.13:554/cam/realmonitor?channel=1&subtype=0&unicast=true&proto=Onvif';
+		const isRtspLinkValid = await cameraController.checkRTSPStream(rtsp_url);
+		console.log('..........finish check rtsp');
+		if (isRtspLinkValid) res.status(200).send('status check with result: ', isRtspLinkValid);
+		else res.status(500).send('RTSP stream is not available with code x000.');		
+	} catch (err) {
+		console.error('Error checking RTSP stream:', err);
+		res.status(500).send('RTSP stream is not available.');
+	}
+	
+})
+
 app.listen(port, () => {
 	console.log(`Server running on port ${port}`);
-	setInterval(cameraController.cleanVideos, intervalTime)
+	//setInterval(cameraController.cleanVideos, intervalTime)
 	console.log(`clean successfully`);
 
 	// Reset state all cameray to ready when start server
