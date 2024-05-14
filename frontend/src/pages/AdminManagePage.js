@@ -42,6 +42,7 @@ const AdminPage = () => {
               cameras={cameras}
               onAddCamera={() => setIsModalOpen(true)}
               onSelectCamera={setSelectedCamera}
+              selectedCameraId={selectedCamera}
             />
             <CameraModal
               isOpen={isModalOpen}

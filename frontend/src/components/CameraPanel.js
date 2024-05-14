@@ -10,7 +10,7 @@ import DeleteCameraModal from './modals/DeleteCameraModal';
 import QrModal from './modals/QrModal';
 import { CAMERA_STATUS } from '../constants/Camera';
 
-const CameraPanel = ({ camera, onClick }) => {
+const CameraPanel = ({ camera, onClick, isSelected }) => {
   const [isStreaming, setIsStreaming] = useState(camera.status === CAMERA_STATUS.STARTING);
   const [openEditModal, setOpenEditModal] = useState(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
@@ -99,9 +99,14 @@ const CameraPanel = ({ camera, onClick }) => {
   return (
     <>
       <div
-        className="bg-gradient-to-r from-cyan-100 to-blue-100 rounded-lg shadow-md p-4 w-96 mx-auto cursor-pointer"
+        className="bg-gradient-to-r from-cyan-100 to-blue-100 rounded-lg shadow-md p-4 w-96 mx-auto cursor-pointer relative"
         onClick={onClick}
       >
+        {isSelected && 
+          <div className="absolute inset-0 border border-2 border-blue-500 rounded-lg flex justify-center overflow-hidden">
+            <span className="text-xs font-semibold text-white bg-blue-500 p-1 rounded-md h-fit -mt-1">Đang được chọn</span>
+          </div>
+        }
         <div className="flex gap-3 justify-between items-center mb-2">
           <h2 className="text-lg text-gray-500 font-bold ">{camera.name}</h2>
           <div className="flex gap-2">
