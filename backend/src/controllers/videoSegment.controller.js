@@ -111,7 +111,7 @@ module.exports = {
     const cameraId = req.params.cameraId;
     
     try {
-      const videoSegments = await VideoSegment.findAll({ where: { cameraId } });
+      const videoSegments = await VideoSegment.findAll({ where: { cameraId }, order: [['createdAt', 'ASC']] });
       res.status(200).send(videoSegments);
     } catch (error) {
       console.error('Error retrieving video segments by cameraId:', error);
