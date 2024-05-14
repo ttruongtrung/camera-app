@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import CameraList from '../components/CameraList';
-import CameraModal from '../components/CameraModal';
+import CameraModal from '../components/modals/CameraModal';
 import VideoSegmentsList from '../components/VideoSegmentList';
 import useCameras from '../hooks/useCameras';
 import Loading from '../components/Loading';

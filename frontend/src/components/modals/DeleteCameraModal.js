@@ -2,14 +2,6 @@ import React, { useEffect } from 'react';
 import Modal from 'react-modal';
 
 const DeleteCameraModal = ({ isOpen, onClose, onSubmit }) => {
-
-  useEffect(() => {
-    Modal.setAppElement('#root');
-    return () => {
-      Modal.setAppElement(null);
-    };
-  }, []);
-
   const handleSubmit = () => {
     onSubmit();
     onClose();

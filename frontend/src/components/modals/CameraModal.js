@@ -2,12 +2,6 @@ import React, { useRef, useEffect } from 'react';
 import Modal from 'react-modal';
 
 const CameraModal = ({ isOpen, onClose, onAdd }) => {
-  useEffect(() => {
-    Modal.setAppElement('#root');
-    return () => {
-      Modal.setAppElement(null);
-    };
-  }, []);
 
   const cameraNameRef = useRef();
   const modelTypeRef = useRef();

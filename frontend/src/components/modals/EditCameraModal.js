@@ -10,12 +10,6 @@ const EditCameraModal = ({ isOpen, onClose, onSubmit, camera }) => {
     setShowPassword(!showPassword);
   };
 
-  useEffect(() => {
-    Modal.setAppElement('#root');
-    return () => {
-      Modal.setAppElement(null);
-    };
-  }, []);
 
   const { register, handleSubmit, setValue, reset } = useForm();
 

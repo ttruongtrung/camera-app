@@ -22,17 +22,9 @@ const VideoSegmentsList = ({ cameraId, selectedCamera, showDefault }) => {
     }
   }, [cameraId]);
 
-  const dummy = [
-    { id: 1, description: 'abc.mp4', start_time: '3:00 PM', end_time: '4:00PM'},
-    { id: 2, description: 'abc.mp4', start_time: '4:00 PM', end_time: '5:00PM'},
-    { id: 3, description: 'abc.mp4', start_time: '5:00 PM', end_time: '6:00PM'},
-    { id: 4, description: 'abc.mp4', start_time: '6:00 PM', end_time: '7:00PM'}
-  ];
-
   const fetchSegments = async () => {
     try {
       const response = await axios.get(`${apiPath}/api/camera/${cameraId}/segments`);
-      console.log(';;;', response);
       setSegments(response.data);
       if (showDefault && response.data.length > 0) {
         setCurrentSegment(response.data[0]);

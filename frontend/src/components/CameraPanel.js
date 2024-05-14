@@ -4,10 +4,10 @@ import { BsFillPlayCircleFill, BsPauseCircleFill } from 'react-icons/bs';
 import { SiStatuspal } from 'react-icons/si';
 import { PiWaveform } from 'react-icons/pi';
 import { MdOutlineModeEdit, MdOutlineDeleteOutline, MdOutlineQrCode } from 'react-icons/md';
-import EditCameraModal from './EditCameraModal';
+import EditCameraModal from './modals/EditCameraModal';
 import useCameras from '../hooks/useCameras';
-import DeleteCameraModal from './DeleteCameraModal';
-import QrModal from './QrModal';
+import DeleteCameraModal from './modals/DeleteCameraModal';
+import QrModal from './modals/QrModal';
 import { CAMERA_STATUS } from '../constants/Camera';
 
 const CameraPanel = ({ camera, onClick }) => {

@@ -4,6 +4,8 @@ import AdminLoginPage from './pages/AdminLoginPage';
 import AdminManagePage from './pages/AdminManagePage';
 import VideoSegmentPage from './pages/VideoSegmentsPage';
 import { AuthProvider } from './auth/AuthContext';
+import Modal from 'react-modal';
+Modal.setAppElement('#root');
 
 function App() {
   return (

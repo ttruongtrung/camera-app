@@ -7,13 +7,6 @@ import { FiDownload } from "react-icons/fi";
 const QrModal = ({ isOpen, onClose, qrCodeValue, camera }) => {
   const qrCodeRef = useRef();
 
-  useEffect(() => {
-    Modal.setAppElement('#root');
-    return () => {
-      Modal.setAppElement(null);
-    };
-  }, []);
-
   const handleDownloadQRCode = () => {
     const canvas = qrCodeRef.current.querySelector('canvas');
     const url = canvas.toDataURL('image/png');
