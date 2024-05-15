@@ -3,15 +3,23 @@ import axios from 'axios';
 import { BsFillPlayCircleFill, BsPauseCircleFill } from 'react-icons/bs';
 import { SiStatuspal } from 'react-icons/si';
 import { PiWaveform } from 'react-icons/pi';
-import { MdOutlineModeEdit, MdOutlineDeleteOutline, MdOutlineQrCode } from 'react-icons/md';
+import {
+  MdOutlineModeEdit,
+  MdOutlineDeleteOutline,
+  MdOutlineQrCode,
+} from 'react-icons/md';
 import EditCameraModal from './modals/EditCameraModal';
 import useCameras from '../hooks/useCameras';
 import DeleteCameraModal from './modals/DeleteCameraModal';
 import QrModal from './modals/QrModal';
 import { CAMERA_STATUS } from '../constants/Camera';
+import { getRTSPlink } from '../utils';
 
 const CameraPanel = ({ camera, onClick, isSelected }) => {
-  const [isStreaming, setIsStreaming] = useState(camera.status === CAMERA_STATUS.STARTING);
+  const [videoLength, setVideoLength] = useState('5');
+  const [isStreaming, setIsStreaming] = useState(
+    camera.status === CAMERA_STATUS.STARTING
+  );
   const [openEditModal, setOpenEditModal] = useState(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const { refetch } = useCameras();
@@ -27,19 +35,18 @@ const CameraPanel = ({ camera, onClick, isSelected }) => {
   const handleOpenEditModal = (e) => {
     e.stopPropagation();
     setOpenEditModal(true);
-  }
-
+  };
 
   const handleOpenDeleteModal = (e) => {
     e.stopPropagation();
     setOpenDeleteModal(true);
-  }
+  };
 
   const handleGenerateQrCode = () => {
-    const link = `${apiPath}/api/camera/${camera.id}/segments`
+    const link = `${apiPath}/api/camera/${camera.id}/segments`;
     setQrCodeValue(link);
     setOpenQrModal(true);
-  }
+  };
 
   const handleCheckRTSPStream = async () => {
     try {
@@ -50,12 +57,24 @@ const CameraPanel = ({ camera, onClick, isSelected }) => {
     } catch (error) {
       console.error('Error checking stream:', error);
     }
-  }
+  };
 
   const startStream = async () => {
     try {
+      const rtsp = getRTSPlink(
+        camera.model_type,
+        camera.ip_address,
+        camera.username,
+        camera.password
+      );
+      const data = {
+        rtspLink: rtsp,
+        videoLength: Number(videoLength),
+      };
+      console.log(data);
       const response = await axios.post(
-        `${apiPath}/api/camera/${camera.id}/start-capture`
+        `${apiPath}/api/camera/${camera.id}/start-capture`,
+        data
       );
       console.log('Start stream', response);
       setIsStreaming(true);
@@ -78,13 +97,16 @@ const CameraPanel = ({ camera, onClick, isSelected }) => {
 
   const updateCamera = async (data) => {
     try {
-      const response = await axios.put(`${apiPath}/api/camera/${camera.id}`, data);
+      const response = await axios.put(
+        `${apiPath}/api/camera/${camera.id}`,
+        data
+      );
       console.log(response);
       refetch();
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 
   const deleteCamera = async (data) => {
     try {
@@ -92,9 +114,19 @@ const CameraPanel = ({ camera, onClick, isSelected }) => {
       console.log(response);
       refetch();
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
+
+  const handleRadioChange = (event) => {
+    event.stopPropagation();
+    console.log(event);
+    setVideoLength(event.target.value);
+  };
+
+  const handleLabelClick = (event) => {
+    event.stopPropagation();
+  };
 
   return (
     <>
@@ -102,19 +134,27 @@ const CameraPanel = ({ camera, onClick, isSelected }) => {
         className="bg-gradient-to-r from-cyan-100 to-blue-100 rounded-lg shadow-md p-4 w-96 mx-auto cursor-pointer relative"
         onClick={onClick}
       >
-        {isSelected && 
-          <div className="absolute inset-0 border border-2 border-blue-500 rounded-lg flex justify-center overflow-hidden">
-            <span className="text-xs font-semibold text-white bg-blue-500 p-1 rounded-md h-fit -mt-1">Đang được chọn</span>
+        {isSelected && (
+          <div className="absolute inset-0 border-2 border-blue-500 rounded-lg flex justify-center overflow-hidden">
+            <span className="text-xs font-semibold text-white bg-blue-500 p-1 rounded-md h-fit -mt-1">
+              Đang được chọn
+            </span>
           </div>
-        }
+        )}
         <div className="flex gap-3 justify-between items-center mb-2">
           <h2 className="text-lg text-gray-500 font-bold ">{camera.name}</h2>
-          <div className="flex gap-2">
-            <div className="flex hover:text-green-800 transition text-green-500" onClick={handleOpenEditModal}>
+          <div className="relative flex gap-2">
+            <div
+              className="flex hover:text-green-800 transition text-green-500"
+              onClick={handleOpenEditModal}
+            >
               <MdOutlineModeEdit />
               <span className="text-sm font-bold underline">Sửa</span>
             </div>
-            <div className="flex items-center hover:text-red-800 transition text-red-500" onClick={handleOpenDeleteModal}>
+            <div
+              className="flex items-center hover:text-red-800 transition text-red-500"
+              onClick={handleOpenDeleteModal}
+            >
               <MdOutlineDeleteOutline />
               <span className="text-sm font-bold underline">Xóa</span>
             </div>
@@ -144,7 +184,7 @@ const CameraPanel = ({ camera, onClick, isSelected }) => {
                 {isStreaming ? 'Đang stream' : 'Tạm dừng'}
               </span>
             </div>
-            <div 
+            <div
               className="flex items-center gap-x-2 mt-2 text-blue-500"
               onClick={handleGenerateQrCode}
             >
@@ -153,13 +193,49 @@ const CameraPanel = ({ camera, onClick, isSelected }) => {
                 Tạo QR code link
               </span>
             </div>
+            {!isStreaming && (
+              <div className="mt-2">
+                <p className="font-bold text-gray-500 text-sm mb-1">
+                  Chọn độ dài video:
+                </p>
+                <form className="flex gap-2 relative">
+                  <div className="cursor-pointer">
+                    <label onClick={handleLabelClick}>
+                      <input
+                        className="mr-1"
+                        type="radio"
+                        value="5"
+                        checked={videoLength === '5'}
+                        onChange={handleRadioChange}
+                      />
+                      5 phút
+                    </label>
+                  </div>
+                  <div>
+                    <label
+                      className="cursor-pointer"
+                      onClick={handleLabelClick}
+                    >
+                      <input
+                        className="mr-1"
+                        type="radio"
+                        value="10"
+                        checked={videoLength === '10'}
+                        onChange={handleRadioChange}
+                      />
+                      10 phút
+                    </label>
+                  </div>
+                </form>
+              </div>
+            )}
           </div>
           {/* <button className="mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
           Action
         </button> */}
           <div
-            //onClick={handleStreaming}
-            onClick={handleCheckRTSPStream}
+            onClick={handleStreaming}
+            // onClick={handleCheckRTSPStream}
             className="cursor-pointer text-blue-500 hover:text-blue-700 transition duration-300 ease-in-out"
           >
             {!isStreaming ? (
@@ -170,9 +246,23 @@ const CameraPanel = ({ camera, onClick, isSelected }) => {
           </div>
         </div>
       </div>
-      <EditCameraModal isOpen={openEditModal} onClose={() => setOpenEditModal(false)} onSubmit={updateCamera} camera={camera} />
-      <DeleteCameraModal isOpen={openDeleteModal} onClose={() => setOpenDeleteModal(false)} onSubmit={deleteCamera} />
-      <QrModal isOpen={openQrModal} onClose={() => setOpenQrModal(false)} qrCodeValue={qrCodeValue} camera={camera}/>
+      <EditCameraModal
+        isOpen={openEditModal}
+        onClose={() => setOpenEditModal(false)}
+        onSubmit={updateCamera}
+        camera={camera}
+      />
+      <DeleteCameraModal
+        isOpen={openDeleteModal}
+        onClose={() => setOpenDeleteModal(false)}
+        onSubmit={deleteCamera}
+      />
+      <QrModal
+        isOpen={openQrModal}
+        onClose={() => setOpenQrModal(false)}
+        qrCodeValue={qrCodeValue}
+        camera={camera}
+      />
     </>
   );
 };
