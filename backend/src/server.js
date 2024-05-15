@@ -101,6 +101,10 @@ app.get('/api/camera/:cameraId/segments', (req, res) => VideoSegment.getVideoSeg
 app.post('/api/camera/:cameraId/start-capture', async (req, res) => {
 	const cameraId = req.params.cameraId;
 	const rtsp = 'public/videos/video' + cameraId + '.mp4';
+	
+	// Get body rtsp and videoLength from request
+	// const rtsp = req.body.rtspLink;
+	// const videoLength = req.body.videoLength;
 	if (!cameraStatus.hasOwnProperty(cameraId)) {
 		cameraStatus[cameraId] = {
 			isCapturing: false,

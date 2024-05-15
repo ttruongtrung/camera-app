@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { LiaPhotoVideoSolid } from "react-icons/lia";
-import { FaDatabase } from "react-icons/fa";
+import { LiaPhotoVideoSolid } from 'react-icons/lia';
+import { FaDatabase } from 'react-icons/fa';
 
 const VideoSegmentsList = ({ cameraId, selectedCamera, showDefault }) => {
   const [currentCamera, selectedCurrentCamera] = useState(null);
@@ -15,17 +15,19 @@ const VideoSegmentsList = ({ cameraId, selectedCamera, showDefault }) => {
       selectedCurrentCamera(selectedCamera);
       setCurrentSegment(null);
     }
-  }, [selectedCamera])
+  }, [selectedCamera]);
 
   useEffect(() => {
     if (cameraId) {
-      fetchSegments(); 
+      fetchSegments();
     }
   }, [cameraId]);
 
   const fetchSegments = async () => {
     try {
-      const response = await axios.get(`${apiPath}/api/camera/${cameraId}/segments`);
+      const response = await axios.get(
+        `${apiPath}/api/camera/${cameraId}/segments`
+      );
       setSegments(response.data);
       if (showDefault && response.data.length > 0) {
         setCurrentSegment(response.data[0]);
@@ -49,7 +51,10 @@ const VideoSegmentsList = ({ cameraId, selectedCamera, showDefault }) => {
           </h2>
           <div className="rounded-lg overflow-hidden w-[500px] max-w-full md:max-w-xl">
             <video controls className="w-full" key={currentSegment.description}>
-              <source src={videoUrl + currentSegment.description} type="video/mp4" />
+              <source
+                src={videoUrl + currentSegment.description}
+                type="video/mp4"
+              />
               Your browser does not support the video tag.
             </video>
           </div>
@@ -61,41 +66,46 @@ const VideoSegmentsList = ({ cameraId, selectedCamera, showDefault }) => {
           </h2>
           <div className="rounded-lg overflow-hidden w-[500px] max-w-full md:max-w-xl">
             <div className="h-[250px] bg-gray-400 flex items-center justify-center gap-4">
-                <div className="w-8 h-8 rounded-full bg-white"></div>
-                <div className="w-8 h-8 rounded-full bg-white"></div>
-                <div className="w-8 h-8 rounded-full bg-white"></div>
+              <div className="w-8 h-8 rounded-full bg-white"></div>
+              <div className="w-8 h-8 rounded-full bg-white"></div>
+              <div className="w-8 h-8 rounded-full bg-white"></div>
             </div>
           </div>
         </div>
       )}
-      <div className="bg-white p-4 rounded-lg overflow-hidden min-w-[310px]">
-        <h2 className="text-xl font-semibold bg-black text-white px-4 py-2 mb-4 font-[900] -ml-4 -mt-4 w-[calc(100%+2rem)]">
+      <div className="bg-white p-4 rounded-lg min-w-[310px] max-h-[calc(100vh_-_379px)] overflow-scroll">
+        <h2 className="text-xl bg-black text-white px-4 py-2 mb-4 font-[900] -ml-4 -mt-4 w-[calc(100%+2rem)]">
           Đoạn video ngắn
         </h2>
         <div className="flex flex-col items-center gap-2">
-          {segments.length > 0 ? (segments.map((segment, index) => (
-            <div 
-              key={index} onClick={() => handleSegmentClick(segment)}
-              className={`flex gap-2 max-w-96 items-center border border-gray-300 rounded-lg px-4 
+          {segments.length > 0 ? (
+            segments.map((segment, index) => (
+              <div
+                key={index}
+                onClick={() => handleSegmentClick(segment)}
+                className={`flex gap-2 max-w-96 items-center border border-gray-300 rounded-lg px-4 
                 py-1 cursor-pointer hover:bg-gray-300 bg-white
-                ${segment.id === currentSegment?.id ? 'bg-blue-100' : ''}`
-              }   
-            >
-              <LiaPhotoVideoSolid size={32}/>
-              <div>
-                <div className="mt-2 text-sm font-semibold">{segment.startTime} - {segment.end_time}</div>
-                <div className="text-xs text-gray-500">Chọn để xem trước hay tải về </div>
+                ${segment.id === currentSegment?.id ? 'bg-blue-100' : ''}`}
+              >
+                <LiaPhotoVideoSolid size={32} />
+                <div>
+                  <div className="mt-2 text-sm font-semibold">
+                    {segment.startTime} - {segment.end_time}
+                  </div>
+                  <div className="text-xs text-gray-500">
+                    Chọn để xem trước hay tải về{' '}
+                  </div>
+                </div>
               </div>
-              
-            </div>
-          ))) :(
+            ))
+          ) : (
             <div className="flex items-center gap-4 text-gray-500">
               <FaDatabase />
               Chưa có video nào
             </div>
           )}
         </div>
-      </div> 
+      </div>
     </div>
   );
 };
