@@ -42,7 +42,8 @@ const CameraPanel = ({ camera, onClick, isSelected }) => {
     setOpenDeleteModal(true);
   };
 
-  const handleGenerateQrCode = () => {
+  const handleGenerateQrCode = (e) => {
+    e.stopPropagation();
     const link = `${apiPath}/api/camera/${camera.id}/segments`;
     setQrCodeValue(link);
     setOpenQrModal(true);
@@ -185,11 +186,11 @@ const CameraPanel = ({ camera, onClick, isSelected }) => {
               </span>
             </div>
             <div
-              className="flex items-center gap-x-2 mt-2 text-blue-500"
+              className="flex items-center gap-x-2 mt-2 text-blue-500 transition relative"
               onClick={handleGenerateQrCode}
             >
               <MdOutlineQrCode size={24} />
-              <span className="font-bold  text-sm underline">
+              <span className="font-bold text-sm underline hover:text-blue-700">
                 Tạo QR code link
               </span>
             </div>
@@ -236,7 +237,7 @@ const CameraPanel = ({ camera, onClick, isSelected }) => {
           <div
             onClick={handleStreaming}
             // onClick={handleCheckRTSPStream}
-            className="cursor-pointer text-blue-500 hover:text-blue-700 transition duration-300 ease-in-out"
+            className="cursor-pointer text-blue-500 hover:text-blue-700 transition duration-300 ease-in-out relative"
           >
             {!isStreaming ? (
               <BsFillPlayCircleFill size={48} />

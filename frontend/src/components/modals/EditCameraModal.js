@@ -36,7 +36,7 @@ const EditCameraModal = ({ isOpen, onClose, onSubmit, camera }) => {
       <div className="modal-overlay fixed top-0 left-0 w-full h-full bg-gray-900 opacity-50 pointer-events-none"></div>
       <div className="w-[700px] bg-white rounded-lg shadow-lg p-6 z-10">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold">Thêm mới Camera</h2>
+          <h2 className="text-xl font-semibold">Sửa thông tin Camera</h2>
           <button
             onClick={onClose}
             className="text-gray-500 hover:text-gray-700 focus:outline-none"
