@@ -13,7 +13,7 @@ import useCameras from '../hooks/useCameras';
 import DeleteCameraModal from './modals/DeleteCameraModal';
 import QrModal from './modals/QrModal';
 import { CAMERA_STATUS } from '../constants/Camera';
-import { getRTSPlink } from '../utils';
+import { getRTSPlink } from '../utils/rtspHandler';
 
 const CameraPanel = ({ camera, onClick, isSelected }) => {
   const [videoLength, setVideoLength] = useState('5');
