@@ -105,7 +105,7 @@ const VideoSegmentsList = ({ cameraId, selectedCamera, showDefault }) => {
           <FaSyncAlt className="rotate-[134deg]" size={32} />
         </div>
         <div className="flex flex-col items-center gap-6 py-4">
-          <div className="flex px-4 gap-4 items-center">
+          <div className="flex px-4 gap-2 items-center justify-between w-full">
             <div className="text-white text-semibold text-xl">
               DATE: {format(new Date(), 'dd/MM/yyyy')}
             </div>
@@ -139,9 +139,9 @@ const VideoSegmentsList = ({ cameraId, selectedCamera, showDefault }) => {
                 </div>
               ))
             ) : (
-              <div className="mt-2 flex items-center gap-4 text-gray-500">
+              <div className="mt-2 flex items-center gap-4 text-white">
                 <FaDatabase />
-                Không tìm thấy video nào
+                No videos found
               </div>
             )}
           </div>

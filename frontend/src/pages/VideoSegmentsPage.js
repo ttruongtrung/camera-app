@@ -8,22 +8,29 @@ const VideoSegmentPage = () => {
 
   return (
     <div className="min-h-screen max-w-[min(572px,100%)] mx-auto bg-black">
-      <Header/>
+      <Header />
       <div className="py-2">
         <div className="flex flex-col justify-center items-center">
           {cameraId && <VideoSegmentsList cameraId={cameraId} showDefault />}
         </div>
-        <div className="bg-orangeLight px-2 py-6 pb-[60px] text-white">
-          <h2 className="text-2xl mx-auto text-center">PROJECTS</h2>
-          <div className="grid grid-cols-[1fr_1fr_1fr] gap-2 mt-4">
-            <div className="w-full bg-white h-[80px] rounded flex justify-center items-center text-black">Project 1</div>
-            <div className="w-full bg-white h-[80px] rounded flex justify-center items-center text-black">Project 2</div>
-            <div className="w-full bg-white h-[80px] rounded flex justify-center items-center text-black">Project 3</div>
+        <div className="bg-orangeLight px-2 py-6 pb-[50px] text-white">
+          <h2 className="text-2xl mx-auto text-center">OUR PROJECTS</h2>
+          <div className="grid grid-cols-[1fr_1fr_1fr_1fr] gap-2 mt-6">
+            {new Array(8).fill(0).map((_, index) => (
+              <div key={index} className="w-full bg-white rounded flex justify-center items-center text-black">
+                <img
+                  alt={index + 1}
+                  src={`/images/projects/project-${index + 1}.png`}
+                />
+              </div>
+            ))}
           </div>
         </div>
       </div>
       <div className="flex justify-center py-4">
-        <FooterLogo className="h-10" />
+        <a href="https://tasse.vn" rel='noreferrer noopener' target='_blank'>
+          <FooterLogo className="h-10" />
+        </a>
       </div>
     </div>
   );
