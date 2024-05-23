@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import { BsFillPlayCircleFill, BsPauseCircleFill } from 'react-icons/bs';
 import { SiStatuspal } from 'react-icons/si';
@@ -14,6 +14,7 @@ import DeleteCameraModal from './modals/DeleteCameraModal';
 import QrModal from './modals/QrModal';
 import { CAMERA_STATUS } from '../constants/Camera';
 import { getRTSPlink } from '../utils/rtspHandler';
+import { AuthContext } from '../auth/AuthContext';
 
 const CameraPanel = ({ camera, onClick, isSelected }) => {
   const [videoLength, setVideoLength] = useState('5');
@@ -26,6 +27,12 @@ const CameraPanel = ({ camera, onClick, isSelected }) => {
   const apiPath = process.env.REACT_APP_BE_API_URL;
   const [qrCodeValue, setQrCodeValue] = useState('');
   const [openQrModal, setOpenQrModal] = useState(false);
+  const { accessToken } = useContext(AuthContext);
+  const config = {
+    headers: {
+      'Authorization': `Bearer ${accessToken}`
+    }
+  };
 
   const handleStreaming = (e) => {
     e.stopPropagation();
@@ -75,7 +82,8 @@ const CameraPanel = ({ camera, onClick, isSelected }) => {
       console.log(data);
       const response = await axios.post(
         `${apiPath}/api/camera/${camera.id}/start-capture`,
-        data
+        data,
+        config 
       );
       console.log('Start stream', response);
       setIsStreaming(true);
@@ -87,7 +95,8 @@ const CameraPanel = ({ camera, onClick, isSelected }) => {
   const stopStream = async () => {
     try {
       const response = await axios.post(
-        `${apiPath}/api/camera/${camera.id}/stop-capture`
+        `${apiPath}/api/camera/${camera.id}/stop-capture`,
+        config 
       );
       console.log('Stop stream', response);
       setIsStreaming(false);
@@ -100,7 +109,8 @@ const CameraPanel = ({ camera, onClick, isSelected }) => {
     try {
       const response = await axios.put(
         `${apiPath}/api/camera/${camera.id}`,
-        data
+        data,
+        config
       );
       console.log(response);
       refetch();
@@ -111,7 +121,7 @@ const CameraPanel = ({ camera, onClick, isSelected }) => {
 
   const deleteCamera = async (data) => {
     try {
-      const response = await axios.delete(`${apiPath}/api/camera/${camera.id}`);
+      const response = await axios.delete(`${apiPath}/api/camera/${camera.id}`, config);
       console.log(response);
       refetch();
     } catch (error) {
