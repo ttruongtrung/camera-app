@@ -7,7 +7,9 @@ const Header = () => {
         <span className="text-orangeE text-3xl">CAMERA</span>
         <span className="text-white text-lg leading-none">BILLIARDS VIEW</span>
       </div>
-      <Logo className="h-10" />
+      <a href="https://tasse.vn" rel="noreferrer noopener" target="_blank">
+        <Logo className="h-10" />
+      </a>
     </div>
   );
 };

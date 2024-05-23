@@ -13,7 +13,7 @@ const customMiddleware = (req, res, next) => {
 
 router.post('/api/login', authenticate);
 
-router.use('/api/storage', express.static(path.join(__dirname, '..', 'public', 'videos')));
+router.use('/api/storage', express.static(path.join(__dirname, '..', '..', 'public', 'videos')));
 router.get('/api/cameras', authorize, (req, res) => CameraCtrl.getAllCameras(req, res));
 router.post('/api/camera', customMiddleware, authorize, (req, res) => CameraCtrl.createCamera(req, res));
 router.put('/api/camera/:id', authorize, (req, res) => CameraCtrl.updateCamera(req, res));
