@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import Modal from 'react-modal';
 import { useDebouncedCallback } from 'use-debounce';
-import { getRTSPlink } from '../../utils';
+import { getRTSPlink } from '../../utils/rtspHandler';
 
 const CameraModal = ({ isOpen, onClose, onAdd }) => {
   const cameraNameRef = useRef();
