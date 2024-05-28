@@ -27,10 +27,10 @@ const CameraModal = ({ isOpen, onClose, onAdd }) => {
 
   const handleInputChange = useDebouncedCallback(() => {
     const rtsp = getRTSPlink(
-      modelTypeRef.current.value,
-      ipAddressRef.current.value,
-      usernameRef.current.value,
-      passwordRef.current.value
+      modelTypeRef.current?.value,
+      ipAddressRef.current?.value,
+      usernameRef.current?.value,
+      passwordRef.current?.value
     );
     rtspLinkRef.current.value = rtsp;
   }, 1000);

@@ -23,7 +23,7 @@ const AdminPage = () => {
 
   const handleAddCamera = async (camera) => {
     try {
-      await axios.post(`${apiPath}/api/camera`, camera);
+      await axios.post(`${apiPath}/api/camera`, camera, config);
       console.log('Camera added:', camera);
       refetch();
     } catch (error) {
@@ -51,7 +51,7 @@ const AdminPage = () => {
             />
           </div>
           <div className="py-8">
-            <VideoSegmentsList cameraId={selectedCamera} selectedCamera={selectedCamera} />
+            <VideoSegmentsList cameraId={selectedCamera} />
           </div>
         </>
       )}

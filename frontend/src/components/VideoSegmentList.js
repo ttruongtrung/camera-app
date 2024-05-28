@@ -27,7 +27,7 @@ const formatDateTime = (dateTimeString) => {
   return format(date, 'HH:mm dd-MM-yyyy');
 };
 
-const VideoSegmentsList = ({ cameraId, selectedCamera, showDefault }) => {
+const VideoSegmentsList = ({ cameraId, showDefault }) => {
   const [currentCamera, setCurrentCamera] = useState(null);
   const [currentSegment, setCurrentSegment] = useState(null);
   const [filterSegments, setFilterSegments] = useState([]);
@@ -44,11 +44,11 @@ const VideoSegmentsList = ({ cameraId, selectedCamera, showDefault }) => {
   }, [segments, isLoading]);
 
   useEffect(() => {
-    if (selectedCamera !== currentCamera) {
-      setCurrentCamera(selectedCamera);
+    if (cameraId !== currentCamera) {
+      setCurrentCamera(cameraId);
       setCurrentSegment(null);
     }
-  }, [selectedCamera]);
+  }, [cameraId]);
 
   const handleSearch = useDebouncedCallback((value) => {
     const filterList = segments.filter(
@@ -97,7 +97,7 @@ const VideoSegmentsList = ({ cameraId, selectedCamera, showDefault }) => {
           </div>
         )}
       </div>
-      <div className="bg-orangeLight py-8 min-w-[310px] w-full relative mt-4">
+      <div className="bg-orangeLight py-8 min-w-[310px] w-full relative mt-6">
         <div
           onClick={handleRefresh}
           className="absolute -translate-x-2/4 -translate-y-2/4 left-2/4 top-0 p-4 rounded-[50%] bg-orangeLight text-white shadow-lg cursor-pointer transition hover:bg-orangeE"

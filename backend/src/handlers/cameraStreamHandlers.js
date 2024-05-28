@@ -1,7 +1,7 @@
 const { spawn } = require('child_process');
 const path = require('path');
 const moment = require('moment');
-const VideoSegment = require('../models/videoSegment.model');
+const VideoSegmentController = require('../controllers/videoSegment.controller');
 const cameraController = require('../controllers/camera.controller');
 const ffmpegPath = require('ffmpeg-static').path;
 
@@ -33,7 +33,7 @@ function startCaptureStream(cameraId, rtsp) {
     console.log(`ffmpeg process exited with code ${code}`);
     const startTime = moment();
     const endTime = moment(startTime).add(intervalTime, 'milliseconds');
-    const data = VideoSegment.createWithRawData({
+    const data = VideoSegmentController.createWithRawData({
       cameraId: cameraId,
       description: fileName,
       startTime: startTime,
@@ -46,7 +46,8 @@ function startCaptureStream(cameraId, rtsp) {
 
 const startCaptureHandler = async (req, res) => {
   const cameraId = req.params.cameraId;
-  const rtsp = 'public/videos/video' + cameraId + '.mp4';
+  const rtsp = req.body.rtspLink;
+  // const rtsp = 'public/videos/video' + cameraId + '.mp4';
 
   if (!cameraStatus.hasOwnProperty(cameraId)) {
     cameraStatus[cameraId] = {

@@ -15,7 +15,10 @@ const useSegmentList = (cameraId) => {
     }
   };
 
-  return useQuery(['segments', cameraId], fetchSegments);
+  return useQuery(['segments', cameraId], fetchSegments, {
+    enabled: !!cameraId,
+    staleTime: 2000, // Cache data for 2 seconds (2000 milliseconds)
+  });
 };
 
 export default useSegmentList;
