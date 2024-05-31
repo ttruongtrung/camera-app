@@ -75,7 +75,7 @@ const VideoSegmentsList = ({ cameraId, showDefault }) => {
   return (
     <>
       <div className="max-w-full md:max-w-xl">
-        {!currentSegment ? (
+        {currentSegment ? (
           <div className="p-4 overflow-hidden min-w-[310px] mb-4">
             <div className="relative rounded overflow-hidden w-[500px] max-w-full md:max-w-xl">
               <Video videoSrc={videoUrl + currentSegment?.description} />
