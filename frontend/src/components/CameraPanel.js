@@ -96,7 +96,8 @@ const CameraPanel = ({ camera, onClick, isSelected }) => {
     try {
       const response = await axios.post(
         `${apiPath}/api/camera/${camera.id}/stop-capture`,
-        {}, config 
+        {},
+        config 
       );
       console.log('Stop stream', response);
       setIsStreaming(false);

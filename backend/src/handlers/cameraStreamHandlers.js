@@ -1,8 +1,8 @@
 const { spawn } = require('child_process');
 const path = require('path');
 const moment = require('moment');
-const VideoSegmentController = require('../controllers/videoSegment.controller');
-const cameraController = require('../controllers/camera.controller');
+const VideoSegmentCtrl = require('../controllers/videoSegment.controller');
+const CameraCtrl = require('../controllers/camera.controller');
 const ffmpegPath = require('ffmpeg-static').path;
 
 const cameraStatus = {};
@@ -33,7 +33,7 @@ function startCaptureStream(cameraId, rtsp) {
     console.log(`ffmpeg process exited with code ${code}`);
     const startTime = moment();
     const endTime = moment(startTime).add(intervalTime, 'milliseconds');
-    const data = VideoSegmentController.createWithRawData({
+    const data = VideoSegmentCtrl.createWithRawData({
       cameraId: cameraId,
       description: fileName,
       startTime: startTime,
@@ -62,7 +62,7 @@ const startCaptureHandler = async (req, res) => {
     cameraStatus[cameraId].intervalId = setInterval(() => {
       startCaptureStream(cameraId, rtsp);
     }, intervalTime);
-    await cameraController.updateCameraStatus(cameraId, cameraStatus[cameraId].isCapturing);
+    await CameraCtrl.updateCameraStatus(cameraId, cameraStatus[cameraId].isCapturing);
     res.status(200).send(`Capture process started successfully for camera ${cameraId}.`);
   } else {
     res.status(400).send(`Capture process is already running for camera ${cameraId}.`);
@@ -76,7 +76,7 @@ const stopCaptureHandler = async (req, res) => {
     if (cameraStatus[cameraId].isCapturing) {
       clearInterval(cameraStatus[cameraId].intervalId);
       cameraStatus[cameraId].isCapturing = false;
-      await cameraController.updateCameraStatus(cameraId, cameraStatus[cameraId].isCapturing);
+      await CameraCtrl.updateCameraStatus(cameraId, cameraStatus[cameraId].isCapturing);
       res.status(200).send(`Capture process stopped successfully for camera ${cameraId}.`);
     } else {
       res.status(400).send(`Capture process is not running for camera ${cameraId}.`);
@@ -90,7 +90,7 @@ const checkRtspHandler = async (req, res) => {
   try {
     console.log('..........start check rtsp');
     const rtsp_url = 'rtsp://admin:L2427AA6@192.168.1.13:554/cam/realmonitor?channel=1&subtype=0&unicast=true&proto=Onvif';
-    const isRtspLinkValid = await cameraController.checkRTSPStream(rtsp_url);
+    const isRtspLinkValid = await CameraCtrl.checkRTSPStream(rtsp_url);
     console.log('..........finish check rtsp');
     if (isRtspLinkValid) res.status(200).send('status check with result: ', isRtspLinkValid);
     else res.status(500).send('RTSP stream is not available with code x000.');
