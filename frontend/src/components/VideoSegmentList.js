@@ -7,6 +7,7 @@ import useSegmentList from '../hooks/useSegmentList';
 import { ReactComponent as Logo } from '../assets/icons/logo.svg';
 import Video from './Video';
 import InputSearch from './InputSearch';
+import { isIOS } from '../utils/checkDevice';
 
 const formatTime = (dateString) => {
   const date = parseISO(dateString);
@@ -34,6 +35,7 @@ const VideoSegmentsList = ({ cameraId, showDefault }) => {
   const apiPath = process.env.REACT_APP_BE_API_URL;
   const videoUrl = apiPath + '/api/storage/';
   const inputRef = useRef(null);
+  const isIosDevice = isIOS();
 
   const { data: segments, isLoading, refetch } = useSegmentList(cameraId);
 
@@ -78,11 +80,27 @@ const VideoSegmentsList = ({ cameraId, showDefault }) => {
         {currentSegment ? (
           <div className="p-4 overflow-hidden min-w-[310px] mb-4">
             <div className="relative rounded overflow-hidden w-[500px] max-w-full md:max-w-xl">
-              <Video videoSrc={videoUrl + currentSegment?.description} />
-              {/* <Logo
-                className="absolute left-2 top-2 h-10 opacity-50"
-                size={12}
-              /> */}
+              {isIosDevice ? (
+                <>
+                  <video
+                    controls
+                    className="w-full"
+                    key={currentSegment?.description}
+                  >
+                    <source
+                      src={videoUrl + currentSegment?.description}
+                      type="video/mp4"
+                    />
+                    Your browser does not support the video tag.
+                  </video>
+                  <Logo
+                    className="absolute left-2 top-2 h-10 opacity-50"
+                    size={12}
+                  />
+                </>
+              ) : (
+                <Video videoSrc={videoUrl + currentSegment?.description} />
+              )}
             </div>
           </div>
         ) : (
@@ -125,8 +143,10 @@ const VideoSegmentsList = ({ cameraId, showDefault }) => {
                   <div>
                     <div className="text-sm font-semibold">
                       <span className="font-light">Time:</span>{' '}
-                      <span className="text-blue-500">{formatTime(segment.startTime)} -{' '}
-                      {formatTime(segment.endTime)}</span>
+                      <span className="text-blue-500">
+                        {formatTime(segment.startTime)} -{' '}
+                        {formatTime(segment.endTime)}
+                      </span>
                     </div>
                     <div className="text-sm font-semibold">
                       <span className="font-light">Date:</span>{' '}
