@@ -154,7 +154,7 @@ const VideoSegmentsList = ({ cameraId, showDefault }) => {
                 : 'bg-white'
             } transition`}
           >
-            Score
+            Live Score
           </div>
         </div>
         {currentTab === CAMERA_TAB.VIDEO && (
