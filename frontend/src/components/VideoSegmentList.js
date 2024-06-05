@@ -15,8 +15,8 @@ const formatTime = (dateString) => {
 };
 
 const formatDate = (dateString1, dateString2) => {
-  const date1 = format(parseISO(dateString1), 'dd-MM-yyyy');
-  const date2 = format(parseISO(dateString2), 'dd-MM-yyyy');
+  const date1 = format(parseISO(dateString1), 'dd/MM/yyyy');
+  const date2 = format(parseISO(dateString2), 'dd/MM/yyyy');
   if (date1 === date2) {
     return `${date1}`;
   }
@@ -118,15 +118,12 @@ const VideoSegmentsList = ({ cameraId, showDefault }) => {
       <div className="bg-orangeLight py-8 min-w-[310px] w-full relative mt-6">
         <div
           onClick={handleRefresh}
-          className="absolute -translate-x-2/4 -translate-y-2/4 left-2/4 top-0 p-4 rounded-[50%] bg-orangeLight text-white shadow-lg cursor-pointer transition hover:bg-orangeE"
+          className="absolute -translate-x-2/4 -translate-y-2/4 left-2/4 top-0 p-3 rounded-[50%] bg-orangeLight text-white shadow-lg cursor-pointer transition hover:bg-orangeE"
         >
-          <FaSyncAlt className="rotate-[134deg]" size={32} />
+          <FaSyncAlt className="rotate-[134deg]" size={28} />
         </div>
         <div className="flex flex-col items-center gap-6 py-4">
-          <div className="flex px-4 gap-2 items-center justify-between w-full">
-            <div className="text-white text-semibold text-xl">
-              DATE: {format(new Date(), 'dd/MM/yyyy')}
-            </div>
+          <div className="flex px-8 gap-2 items-center justify-center w-full">
             <InputSearch ref={inputRef} handleSearch={handleSearch} />
           </div>
           <div className="flex flex-col gap-2 max-h-[430px] overflow-scroll px-2">
@@ -135,27 +132,18 @@ const VideoSegmentsList = ({ cameraId, showDefault }) => {
                 <div
                   key={index}
                   onClick={() => handleSegmentClick(segment)}
-                  className={`flex gap-3 max-w-90 min-w-[300px] items-center border border-gray-300 rounded-lg px-4 
-                py-2 cursor-pointer hover:bg-gray-300 bg-white
-                ${segment.id === currentSegment?.id ? 'bg-blue-100' : ''}`}
+                  className={`flex gap-3 max-w-90 min-w-[300px] items-center justify-center border border-gray-300 rounded-lg px-4 
+                py-2 cursor-pointer hover:bg-gray-300 
+                ${segment.id === currentSegment?.id ? 'bg-gray-300' : 'bg-white'}`}
                 >
-                  <LiaPhotoVideoSolid size={32} />
-                  <div>
                     <div className="text-sm font-semibold">
-                      <span className="font-light">Time:</span>{' '}
-                      <span className="text-blue-500">
+                      <span className="text-orangeE">
                         {formatTime(segment.startTime)} -{' '}
                         {formatTime(segment.endTime)}
+                        {' '}- {' '} 
                       </span>
+                      <span className="text-[#1f2937]">{formatDate(segment.startTime, segment.endTime)}</span>
                     </div>
-                    <div className="text-sm font-semibold">
-                      <span className="font-light">Date:</span>{' '}
-                      {formatDate(segment.startTime, segment.endTime)}
-                    </div>
-                    <div className="mt-1 text-xs text-gray-500">
-                      Click to preview or download
-                    </div>
-                  </div>
                 </div>
               ))
             ) : (

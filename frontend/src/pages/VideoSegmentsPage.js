@@ -13,7 +13,7 @@ const VideoSegmentPage = () => {
         <div className="flex flex-col justify-center items-center">
           {cameraId && <VideoSegmentsList cameraId={cameraId} showDefault />}
         </div>
-        <div className="bg-orangeLight px-2 py-6 pb-[50px] text-white">
+        <div className="bg-orangeLight px-2 py-4 pb-[50px] text-white border-t-[#ffffff6e]">
           <h2 className="text-2xl mx-auto text-center">OUR PROJECTS</h2>
           <div className="grid grid-cols-[1fr_1fr_1fr_1fr] gap-2 mt-6">
             {new Array(8).fill(0).map((_, index) => (

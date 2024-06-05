@@ -3,8 +3,8 @@ import { IoSearch } from "react-icons/io5";
 
 const InputSearch = ({ handleSearch }, ref) => {
   return (
-    <div className="flex items-center max-w-[180px] border border-gray-300 rounded-3xl overflow-hidden">
-      <IoSearch className="h-10 w-10 pl-3 bg-white text-gray-600" />
+    <div className="flex items-center max-w-[300px] w-full border border-gray-300 rounded-3xl overflow-hidden">
+      <IoSearch className="h-10 w-12 px-2 bg-white text-gray-600" />
       <input
         ref={ref}
         type="text"
