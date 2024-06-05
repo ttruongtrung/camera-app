@@ -35,6 +35,7 @@ const VideoSegmentsList = ({ cameraId, showDefault }) => {
   const [currentCamera, setCurrentCamera] = useState(null);
   const [currentSegment, setCurrentSegment] = useState(null);
   const [filterSegments, setFilterSegments] = useState([]);
+  const liveScoreRef = useRef();
   const apiPath = process.env.REACT_APP_BE_API_URL;
   const videoUrl = apiPath + '/api/storage/';
   const inputRef = useRef(null);
@@ -73,8 +74,12 @@ const VideoSegmentsList = ({ cameraId, showDefault }) => {
   };
 
   const handleRefresh = () => {
-    refetch();
-    inputRef.current.value = '';
+    if (currentTab === CAMERA_TAB.VIDEO) {
+      refetch();
+      inputRef.current.value = '';
+    } else {
+      liveScoreRef.current.resetMatch();
+    }
   };
 
   const handleTabChange = (tab) => {
@@ -83,7 +88,7 @@ const VideoSegmentsList = ({ cameraId, showDefault }) => {
 
   return (
     <>
-      <div className="max-w-full md:max-w-xl">
+      <div className="max-w-full md:max-w-xl mb-6">
         {currentSegment ? (
           <div className="p-4 overflow-hidden min-w-[310px] mb-4">
             <div className="relative rounded overflow-hidden w-[500px] max-w-full md:max-w-xl">
@@ -122,18 +127,18 @@ const VideoSegmentsList = ({ cameraId, showDefault }) => {
           </div>
         )}
       </div>
-      <div className="bg-orangeLight py-8 min-w-[310px] w-full relative mt-6">
-        <div
-          onClick={handleRefresh}
-          className="absolute -translate-x-2/4 -translate-y-2/4 left-2/4 top-0 p-3 rounded-[50%] bg-orangeLight text-white shadow-lg cursor-pointer transition hover:bg-orangeE"
-        >
-          <FaSyncAlt className="rotate-[134deg]" size={28} />
-        </div>
+      <div className="bg-orangeLight pb-8 min-w-[310px] w-full relative mt-6">
         {/* Tab section */}
-        <div className="flex px-10 my-4 justify-center cursor-pointer">
+        <div className="grid grid-cols-[1fr_1fr] px-6 justify-center cursor-pointer relative -translate-y-6">
+          <div
+            onClick={handleRefresh}
+            className="absolute -translate-x-2/4 -translate-y-2/4 left-2/4 top-2/4 p-4 rounded-[50%] bg-orangeLight text-white shadow-lg cursor-pointer transition hover:bg-orangeE"
+          >
+            <FaSyncAlt className="rotate-[134deg]" size={32} />
+          </div>
           <div
             onClick={() => handleTabChange(CAMERA_TAB.VIDEO)}
-            className={`w-40 p-2 text-center border border-solid border-white rounded-tl rounded-bl ${
+            className={`p-3 text-center border border-solid border-white rounded-tl rounded-bl w-full ${
               currentTab === CAMERA_TAB.VIDEO
                 ? 'bg-orangeE text-white '
                 : 'bg-white'
@@ -143,7 +148,7 @@ const VideoSegmentsList = ({ cameraId, showDefault }) => {
           </div>
           <div
             onClick={() => handleTabChange(CAMERA_TAB.SCORE)}
-            className={`w-40 p-2 text-center border border-solid border-white rounded-tr rounded-br ${
+            className={`w-40 p-3 text-center border border-solid border-white rounded-tr rounded-br w-full ${
               currentTab === CAMERA_TAB.SCORE
                 ? 'bg-orangeE text-white '
                 : 'bg-white'
@@ -153,7 +158,7 @@ const VideoSegmentsList = ({ cameraId, showDefault }) => {
           </div>
         </div>
         {currentTab === CAMERA_TAB.VIDEO && (
-          <div className="flex flex-col items-center gap-6 py-4">
+          <div className="flex flex-col items-center gap-6 py-8">
             <div className="flex px-8 gap-2 items-center justify-center w-full">
               <InputSearch ref={inputRef} handleSearch={handleSearch} />
             </div>
@@ -189,7 +194,7 @@ const VideoSegmentsList = ({ cameraId, showDefault }) => {
             </div>
           </div>
         )}
-        {currentTab === CAMERA_TAB.SCORE && <LiveScore />}
+        {currentTab === CAMERA_TAB.SCORE && <LiveScore ref={liveScoreRef} />}
       </div>
     </>
   );

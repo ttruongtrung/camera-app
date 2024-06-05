@@ -14,13 +14,13 @@ const EditableDiv = ({ content, setContent, divClassName, inputClassName }) => {
   return (
     <div className="flex items-center justify-center gap-2">
       {isEditing ? (
-          <FaCheck className="text-[#22c55e] cursor-pointer" onClick={handleCheckClick} />
+          <FaCheck size={20} className="text-[#22c55e] cursor-pointer" onClick={handleCheckClick} />
     ) : (
-          <FaRegEdit className="text-white cursor-pointer" onClick={() => setIsEditing(true)} />
+          <FaRegEdit size={20} className="text-white cursor-pointer" onClick={() => setIsEditing(true)} />
       )}
       {isEditing ? (
         <input
-          className={`${inputClassName} outline-none px-2 py-1 border rounded w-[140px]`}
+          className={`${inputClassName} outline-none px-2 py-1 border rounded w-[140px] h-8`}
           type="text"
           ref={inputRef}
           defaultValue={content}
