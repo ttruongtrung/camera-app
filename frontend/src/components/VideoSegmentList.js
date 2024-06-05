@@ -8,6 +8,8 @@ import { ReactComponent as Logo } from '../assets/icons/logo.svg';
 import Video from './Video';
 import InputSearch from './InputSearch';
 import { isIOS } from '../utils/checkDevice';
+import { CAMERA_TAB } from '../constants/Camera';
+import LiveScore from './LiveScore';
 
 const formatTime = (dateString) => {
   const date = parseISO(dateString);
@@ -29,6 +31,7 @@ const formatDateTime = (dateTimeString) => {
 };
 
 const VideoSegmentsList = ({ cameraId, showDefault }) => {
+  const [currentTab, setCurrentTab] = useState(CAMERA_TAB.VIDEO);
   const [currentCamera, setCurrentCamera] = useState(null);
   const [currentSegment, setCurrentSegment] = useState(null);
   const [filterSegments, setFilterSegments] = useState([]);
@@ -72,6 +75,10 @@ const VideoSegmentsList = ({ cameraId, showDefault }) => {
   const handleRefresh = () => {
     refetch();
     inputRef.current.value = '';
+  };
+
+  const handleTabChange = (tab) => {
+    setCurrentTab(tab);
   };
 
   return (
@@ -122,38 +129,67 @@ const VideoSegmentsList = ({ cameraId, showDefault }) => {
         >
           <FaSyncAlt className="rotate-[134deg]" size={28} />
         </div>
-        <div className="flex flex-col items-center gap-6 py-4">
-          <div className="flex px-8 gap-2 items-center justify-center w-full">
-            <InputSearch ref={inputRef} handleSearch={handleSearch} />
+        {/* Tab section */}
+        <div className="flex px-10 my-4 justify-center cursor-pointer">
+          <div
+            onClick={() => handleTabChange(CAMERA_TAB.VIDEO)}
+            className={`w-40 p-2 text-center border border-solid border-white rounded-tl rounded-bl ${
+              currentTab === CAMERA_TAB.VIDEO
+                ? 'bg-orangeE text-white '
+                : 'bg-white'
+            } transition`}
+          >
+            Video
           </div>
-          <div className="flex flex-col gap-2 max-h-[430px] overflow-scroll px-2">
-            {filterSegments.length > 0 ? (
-              filterSegments.map((segment, index) => (
-                <div
-                  key={index}
-                  onClick={() => handleSegmentClick(segment)}
-                  className={`flex gap-3 max-w-90 min-w-[300px] items-center justify-center border border-gray-300 rounded-lg px-4 
+          <div
+            onClick={() => handleTabChange(CAMERA_TAB.SCORE)}
+            className={`w-40 p-2 text-center border border-solid border-white rounded-tr rounded-br ${
+              currentTab === CAMERA_TAB.SCORE
+                ? 'bg-orangeE text-white '
+                : 'bg-white'
+            } transition`}
+          >
+            Score
+          </div>
+        </div>
+        {currentTab === CAMERA_TAB.VIDEO && (
+          <div className="flex flex-col items-center gap-6 py-4">
+            <div className="flex px-8 gap-2 items-center justify-center w-full">
+              <InputSearch ref={inputRef} handleSearch={handleSearch} />
+            </div>
+            <div className="flex flex-col gap-2 max-h-[430px] overflow-scroll px-2">
+              {filterSegments.length > 0 ? (
+                filterSegments.map((segment, index) => (
+                  <div
+                    key={index}
+                    onClick={() => handleSegmentClick(segment)}
+                    className={`flex gap-3 max-w-90 min-w-[300px] items-center justify-center border border-gray-300 rounded-lg px-4 
                 py-2 cursor-pointer hover:bg-gray-300 
-                ${segment.id === currentSegment?.id ? 'bg-gray-300' : 'bg-white'}`}
-                >
+                ${
+                  segment.id === currentSegment?.id ? 'bg-gray-300' : 'bg-white'
+                }`}
+                  >
                     <div className="text-sm font-semibold">
                       <span className="text-orangeE">
                         {formatTime(segment.startTime)} -{' '}
-                        {formatTime(segment.endTime)}
-                        {' '}- {' '} 
+                        {formatTime(segment.endTime)} -{' '}
                       </span>
-                      <span className="text-[#1f2937]">{formatDate(segment.startTime, segment.endTime)}</span>
+                      <span className="text-[#1f2937]">
+                        {formatDate(segment.startTime, segment.endTime)}
+                      </span>
                     </div>
+                  </div>
+                ))
+              ) : (
+                <div className="mt-2 flex items-center gap-4 text-white">
+                  <FaDatabase />
+                  No videos found
                 </div>
-              ))
-            ) : (
-              <div className="mt-2 flex items-center gap-4 text-white">
-                <FaDatabase />
-                No videos found
-              </div>
-            )}
+              )}
+            </div>
           </div>
-        </div>
+        )}
+        {currentTab === CAMERA_TAB.SCORE && <LiveScore />}
       </div>
     </>
   );
