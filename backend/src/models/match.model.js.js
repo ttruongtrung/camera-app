@@ -50,12 +50,3 @@ module.exports = (sequelize, Sequelize) => {
   return Match;
 };
 
-/**
- * create new Match: create(object)
- * find a Match: findByPk(id)
- * get all Match: findAll()
- * update a Match: update(data, where: { id: id })
- * remove a Match: destroy(where: { id: id })
- * remove all Match: destroy(where: {})
- * find all Match by title: findAll({ where: { title: ... } })
- */

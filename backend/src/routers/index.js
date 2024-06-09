@@ -5,6 +5,7 @@ const path = require('path');
 const { authenticate, authorize } = require('../middlewares/auth');
 const CameraCtrl = require('../controllers/camera.controller');
 const VideoSegmentCtrl = require('../controllers/videoSegment.controller');
+const MatchCtrl = require('../controllers/match.controller');
 
 const customMiddleware = (req, res, next) => {
     console.log('Custom middleware called', req.body);
@@ -19,6 +20,9 @@ router.post('/api/camera', customMiddleware, authorize, (req, res) => CameraCtrl
 router.put('/api/camera/:id', authorize, (req, res) => CameraCtrl.updateCamera(req, res));
 router.delete('/api/camera/:id', authorize, (req, res) => CameraCtrl.deleteCameraById(req, res));
 router.get('/api/camera/:cameraId/segments', (req, res) => VideoSegmentCtrl.getVideoSegmentsByCameraId(req, res));
+router.get('/api/camera/:cameraId/matches', (req, res) => MatchCtrl.getAllMatchesByCameraId(req, res));
+router.post('/api/camera/:cameraId/matches', (req, res) => MatchCtrl.createMatches(req, res));
+router.delete('/api/camera/:cameraId/matches', (req, res) => MatchCtrl.deleteAllMatchesByCameraId(req, res));
 
 router.post('/api/camera/:cameraId/start-capture', authorize, startCaptureHandler);
 router.post('/api/camera/:cameraId/stop-capture', authorize, stopCaptureHandler);
