@@ -108,13 +108,13 @@ const LiveScore = (props, ref) => {
           <EditableDiv
             content={match.player1Name}
             setContent={handlePlayer1NameChange}
-            divClassName="text-center text-2xl text-[#0284c7]"
+            divClassName="text-center text-2xl text-[#0284c7] whitespace-nowrap overflow-hidden text-ellipsis max-w-[160px]"
             inputClassName="text-[#0284c7]"
           />
           <EditableDiv
             content={match.player2Name}
             setContent={handlePlayer2NameChange}
-            divClassName="text-center text-2xl text-[#dc2626]"
+            divClassName="text-center text-2xl text-[#dc2626] whitespace-nowrap overflow-hidden text-ellipsis max-w-[160px]"
             inputClassName="text-[#dc2626]"
           />
         </div>
@@ -172,9 +172,9 @@ const LiveScore = (props, ref) => {
         <div className="text-2xl text-center mb-2">Thống kê</div>
         <div className="grid grid-cols-[repeat(4,1fr)] text-sm text-white bg-gray-400">
           <div className="px-1 py-4 text-center border border-[white]">Trận</div>
-          <div className="px-1 py-4 text-center border border-[white]">player 1</div>
-          <div className="px-1 py-4 text-center border border-[white]">player 2</div>
-          <div className="px-1 py-4 text-center border border-[white]">Time</div>
+          <div className="px-1 py-4 text-center border border-[white] whitespace-nowrap overflow-hidden text-ellipsis">{match.player1Name}</div>
+          <div className="px-1 py-4 text-center border border-[white] whitespace-nowrap overflow-hidden text-ellipsis">{match.player2Name}</div>
+          <div className="px-1 py-4 text-center border border-[white]">Thời gian</div>
         </div>
         {matches.map((m, index) => (
           <div
