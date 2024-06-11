@@ -4,6 +4,7 @@ const moment = require('moment');
 const VideoSegmentCtrl = require('../controllers/videoSegment.controller');
 const CameraCtrl = require('../controllers/camera.controller');
 const ffmpegPath = require('ffmpeg-static').path;
+const fs = require('fs');
 
 const cameraStatus = {};
 const intervalTime = 60000; // 60 seconds
@@ -44,10 +45,48 @@ function startCaptureStream(cameraId, rtsp) {
   });
 }
 
+function startStreaming(cameraId, rtsp) {
+  console.log('start streaming on Backend');
+  const OUTPUT_DIR = path.join(__dirname, '..', '..', 'public', 'videos', 'VideoStreaming');
+  if (!fs.existsSync(OUTPUT_DIR)) {
+      fs.mkdirSync(OUTPUT_DIR, { recursive: true });
+  }
+
+  const OUTPUT_FILE = path.join(OUTPUT_DIR, `stream_${cameraId}.m3u8`);
+  const command = [
+    'ffmpeg',
+    '-rtsp_transport', 'tcp',
+    '-i', rtsp,
+    '-an', // Disable audio recording
+    '-c:v', 'libx264',
+    '-preset', 'fast',
+    '-b:v', '2000k',
+    '-threads', 'auto', // Sử dụng tất cả các nhân CPU có sẵn
+    '-hls_time', '15',
+    '-hls_list_size', '2',
+    '-hls_flags', 'delete_segments',
+    OUTPUT_FILE
+];
+
+
+  const ffmpeg = spawn(command[0], command.slice(1));
+
+  ffmpeg.stdout.on('data', (data) => {
+      console.log(`stdout: ${data}`);
+  });
+
+  ffmpeg.stderr.on('data', (data) => {
+      console.error(`stderr: ${data}`);
+  });
+
+  ffmpeg.on('close', (code) => {
+      console.log(`ffmpeg process exited with code ${code}`);
+  });
+}
+
 const startCaptureHandler = async (req, res) => {
   const cameraId = req.params.cameraId;
   const rtsp = req.body.rtspLink;
-  // const rtsp = 'public/videos/video' + cameraId + '.mp4';
 
   if (!cameraStatus.hasOwnProperty(cameraId)) {
     cameraStatus[cameraId] = {
