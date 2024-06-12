@@ -5,26 +5,27 @@ module.exports = {
   createMatches: async (req, res) => {
     const matches = req.body.matches;
     const cameraId = req.params.cameraId;
-    matches.forEach(async (match) => {
-      const MatchData = {
-        cameraId: cameraId,
-        player1Name: match.player1Name,
-        player2Name: match.player2Name,
-        player1Score: match.player1Score,
-        player2Score: match.player2Score,
-        time: match.time,
-        playerWin: match.playerWin,
-        race: match.race,
-      };
+    try {
+      matches.forEach(async (match) => {
+        const MatchData = {
+          cameraId: cameraId,
+          player1Name: match.player1Name,
+          player2Name: match.player2Name,
+          player1Score: match.player1Score,
+          player2Score: match.player2Score,
+          time: match.time,
+          playerWin: match.playerWin,
+          race: match.race,
+        };
 
-      try {
         const createdMatch = await Match.create(MatchData);
-        return createdMatch;
-      } catch (error) {
-        console.error('Error creating video segment:', error);
-        return { error: 'Internal server error' };
-      }
-    });
+        console.log(createdMatch);
+      });
+    } catch (error) {
+      console.error('Error creating video segment:', error);
+      return { error: 'Internal server error' };
+    }
+    return res.status(201).send({ message: 'Created matches', success: true });
   },
 
   deleteAllMatchesByCameraId: async (req, res) => {
@@ -47,8 +48,8 @@ module.exports = {
     const cameraId = req.params.cameraId;
 
     try {
-      const Match = await Match.findAll({ where: { cameraId } });
-      res.status(200).send(Match);
+      const match = await Match.findAll({ where: { cameraId } });
+      res.status(200).send(match);
     } catch (error) {
       console.error('Error retrieving matches by cameraId:', error);
       res.status(500).send({ error: 'Internal server error' });
