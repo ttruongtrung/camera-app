@@ -1,7 +1,14 @@
-import { forwardRef, useImperativeHandle, useState } from 'react';
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useState,
+} from 'react';
 import { IoAddCircleOutline, IoRemoveCircleOutline } from 'react-icons/io5';
 import EditableDiv from './EditableDiv';
 import { format } from 'date-fns';
+import axios from 'axios';
 
 const LiveScore = (props, ref) => {
   const [totalMatch, setTotalMatch] = useState(2);
@@ -14,34 +21,47 @@ const LiveScore = (props, ref) => {
   };
   const [match, setMatch] = useState(initMatch);
 
+  const deleteMatches = useCallback(async () => {
+    const apiPath = process.env.REACT_APP_BE_API_URL;
+
+    await axios.delete(`${apiPath}/api/camera/${props.cameraId}/matches`);
+  }, [props.cameraId]);
+
   useImperativeHandle(ref, () => ({
     resetMatch() {
       setMatch(initMatch);
+      setMatches([]);
+      deleteMatches();
     },
   }));
 
-  const [matches, setMatches] = useState([
-    {
-      player1Name: 'Player 1',
-      player2Name: 'Player 2',
-      player1Score: 10,
-      player2Score: 0,
-      race: 10,
-      playerWin: 1,
-      time: new Date(),
-    },
-    {
-      player1Name: 'Player 1',
-      player2Name: 'Player 2',
-      player1Score: 0,
-      player2Score: 0,
-      race: 10,
-      playerWin: 2,
-      time: new Date(),
-    },
-  ]);
+  useEffect(() => {
+    const fetchMatches = async () => {
+      const apiPath = process.env.REACT_APP_BE_API_URL;
 
-  const handleIncreaseScore = (player) => {
+      const response = await axios.get(
+        `${apiPath}/api/camera/${props.cameraId}/matches`
+      );
+
+      setMatches(response.data);
+
+      console.log(response);
+    };
+
+    fetchMatches();
+  }, [props.cameraId]);
+
+  const [matches, setMatches] = useState([]);
+
+  const addNewMatch = async (newMatch) => {
+    const apiPath = process.env.REACT_APP_BE_API_URL;
+
+    await axios.post(`${apiPath}/api/camera/${props.cameraId}/matches`, {
+      matches: [newMatch],
+    });
+  };
+
+  const handleIncreaseScore = async (player) => {
     const newMatch = { ...match };
     if (player === 1) {
       newMatch.player1Score = newMatch.player1Score + 1;
@@ -56,15 +76,17 @@ const LiveScore = (props, ref) => {
     ) {
       // Add new match
       newMatch.time = new Date();
-      newMatch.playerWin = newMatch.player1Score > newMatch.player2Score ? 1 : 2
+      newMatch.playerWin =
+        newMatch.player1Score > newMatch.player2Score ? 1 : 2;
       setMatches([...matches, newMatch]);
       setTotalMatch(totalMatch + 1);
       setMatch({
         ...initMatch,
         player1Name: newMatch.player1Name,
         player2Name: newMatch.player2Name,
-        race: newMatch.race
+        race: newMatch.race,
       });
+      await addNewMatch(newMatch);
     } else {
       setMatch(newMatch);
     }
@@ -88,14 +110,14 @@ const LiveScore = (props, ref) => {
   };
 
   const handleIncreaseRace = () => {
-    setMatch({...match, race: match.race + 1});
-  }
+    setMatch({ ...match, race: match.race + 1 });
+  };
 
   const handleDecreaseRace = () => {
     if (match.race > 1) {
-      setMatch({...match, race: match.race - 1});
+      setMatch({ ...match, race: match.race - 1 });
     }
-  }
+  };
 
   return (
     <div className="p-2 text-white">
@@ -171,10 +193,18 @@ const LiveScore = (props, ref) => {
       <div className="mt-8 px-2">
         <div className="text-2xl text-center mb-2">Thống kê</div>
         <div className="grid grid-cols-[repeat(4,1fr)] text-sm text-white bg-gray-400">
-          <div className="px-1 py-4 text-center border border-[white]">Trận</div>
-          <div className="px-1 py-4 text-center border border-[white] whitespace-nowrap overflow-hidden text-ellipsis">{match.player1Name}</div>
-          <div className="px-1 py-4 text-center border border-[white] whitespace-nowrap overflow-hidden text-ellipsis">{match.player2Name}</div>
-          <div className="px-1 py-4 text-center border border-[white]">Thời gian</div>
+          <div className="px-1 py-4 text-center border border-[white]">
+            Trận
+          </div>
+          <div className="px-1 py-4 text-center border border-[white] whitespace-nowrap overflow-hidden text-ellipsis">
+            {match.player1Name}
+          </div>
+          <div className="px-1 py-4 text-center border border-[white] whitespace-nowrap overflow-hidden text-ellipsis">
+            {match.player2Name}
+          </div>
+          <div className="px-1 py-4 text-center border border-[white]">
+            Thời gian
+          </div>
         </div>
         {matches.map((m, index) => (
           <div

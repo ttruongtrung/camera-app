@@ -25,7 +25,7 @@ module.exports = {
       console.error('Error creating video segment:', error);
       return { error: 'Internal server error' };
     }
-    return res.status(201).send({ message: 'Created matches', success: true });
+    return res.status(201).send({ matches: 'Created matches', success: true });
   },
 
   deleteAllMatchesByCameraId: async (req, res) => {
@@ -33,11 +33,7 @@ module.exports = {
 
     try {
       const deletedRowsCount = await Match.destroy({ where: { cameraId } });
-      if (deletedRowsCount === 0) {
-        res.status(404).send({ message: 'Video segment not found' });
-      } else {
-        res.status(204).send();
-      }
+      res.status(204).send();
     } catch (error) {
       console.error('Error deleting video segment:', error);
       res.status(500).send({ error: 'Internal server error' });
