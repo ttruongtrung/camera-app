@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { startCaptureHandler, stopCaptureHandler, checkRtspHandler } = require('../handlers/cameraStreamHandlers');
+const { startCaptureHandler, stopCaptureHandler, checkRtspHandler, startStreamHandler, stopStreamHandler } = require('../handlers/cameraStreamHandlers');
 const path = require('path');
 const { authenticate, authorize } = require('../middlewares/auth');
 const CameraCtrl = require('../controllers/camera.controller');
@@ -26,6 +26,8 @@ router.delete('/api/camera/:cameraId/matches', (req, res) => MatchCtrl.deleteAll
 
 router.post('/api/camera/:cameraId/start-capture', authorize, startCaptureHandler);
 router.post('/api/camera/:cameraId/stop-capture', authorize, stopCaptureHandler);
+router.post('/api/camera/:cameraId/start-stream', authorize, startStreamHandler);
+router.post('/api/camera/:cameraId/stop-stream', authorize, stopStreamHandler);
 router.post('/api/camera/:cameraId/check-rtsp', authorize, checkRtspHandler);
 
 module.exports = router;

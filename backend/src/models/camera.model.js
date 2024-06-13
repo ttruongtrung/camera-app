@@ -11,6 +11,11 @@ module.exports = (sequelize, Sequelize) => {
       type: DataTypes.STRING,
       allowNull: false
     },
+
+    // streamingStatus: {
+    //   type: DataTypes.STRING,
+    //   allowNull: false
+    // },
     model_type: {
       type: DataTypes.STRING,
       allowNull: false

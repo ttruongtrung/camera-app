@@ -124,25 +124,27 @@ module.exports = {
  * @throws {Error} Nếu không tìm thấy camera với ID tương ứng.
  * @throws {Error} Nếu có lỗi xảy ra trong quá trình cập nhật.
  */
-  async updateCameraStatus(cameraId, isCapturing) {
+  async updateCameraStatus(cameraId, isCapturing = null, isStreaming = null) {
     try {
       // Tìm camera dựa trên cameraId
       const camera = await Camera.findByPk(cameraId);
       if (!camera) {
         throw new Error(`Camera with ID ${cameraId} not found.`);
       }
+  
+      if (isCapturing !== null) {
+        camera.isCapturing = isCapturing;
+        camera.status = isCapturing ? CAMERA_STATUS.STARTING : CAMERA_STATUS.READY;
 
-      // Cập nhật trạng thái isCapturing và status
-      camera.isCapturing = isCapturing;
-      if (isCapturing) {
-        camera.status = CAMERA_STATUS.STARTING;
       }
-      else {
-        camera.status = CAMERA_STATUS.READY;
+  
+      if (isStreaming !== null) {
+        camera.isStreaming = isStreaming;
+        camera.streamingStatus = isStreaming ? CAMERA_STATUS.STREAMING : CAMERA_STATUS.READY;
       }
-
+  
       await camera.save();
-
+  
       console.log(`Camera ${cameraId} status updated successfully.`);
     } catch (error) {
       console.error(`Error updating camera ${cameraId} status:`, error);

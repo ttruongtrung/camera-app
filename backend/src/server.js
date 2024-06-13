@@ -8,6 +8,20 @@ const cameraController = require('./controllers/camera.controller');
 const router = require('./routers');
 const intervalTime = 60000*60*4
 
+app.use(cors());
+
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.use('/hls', express.static(path.join(__dirname, '../public/videos/VideoStreaming')));
+app.use(express.static(path.join(__dirname, '../public')));
+
+
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, '../public/index.html'));
+});
+
 db.sequelize.sync()
     .then(() => {
         console.log("Synced db.");
@@ -16,17 +30,6 @@ db.sequelize.sync()
         console.log('Failed to sync db: ', err.message);
     });
 app.use('/', router);
-
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use('/hls', express.static(path.join(__dirname, '../public/videos/VideoStreaming')));
-app.use(express.static(path.join(__dirname, '../public')));
-
-
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '../public/index.html'));
-});
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
