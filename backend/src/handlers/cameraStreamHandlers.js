@@ -57,20 +57,17 @@ function startStreaming(cameraId, rtsp) {
   const OUTPUT_FILE = path.join(OUTPUT_DIR, `stream_${cameraId}.m3u8`);
   const command = [
     'ffmpeg',
-    '-rtsp_transport', 'tcp', 
-    '-i', rtsp,               
-    '-an',                    
-    '-vn',                    
-    '-map', '0:v:0',          
-    '-c:v', 'libx264',        
-    '-preset', 'fast',        
-    '-b:v', '2000k',          
-    '-threads', 'auto',       
-    '-hls_time', '15',        
-    '-hls_list_size', '2',    
-    '-hls_flags', 'delete_segments', 
-    '-f', 'hls',              
-    OUTPUT_FILE               
+    '-rtsp_transport', 'tcp',
+    '-i', rtsp,
+    '-an',
+    '-c:v', 'libx264',
+    '-preset', 'fast',
+    '-b:v', '2000k',
+    '-threads', 'auto',
+    '-hls_time', '15',
+    '-hls_list_size', '2',
+    '-hls_flags', 'delete_segments',
+    OUTPUT_FILE
 ];
 
 
@@ -89,7 +86,7 @@ function startStreaming(cameraId, rtsp) {
   });
 
   ffmpeg.on('close', (code) => {
-      console.log(`ffmpeg process for camera ${cameraId} exited with code ${code}`);s
+      console.log(`ffmpeg process for camera ${cameraId} exited with code ${code}`);
       if (code !== 0) {
           console.error(`Error: ffmpeg process for camera ${cameraId} terminated unexpectedly. Restarting...`);
           startStreaming(cameraId, rtsp); 
