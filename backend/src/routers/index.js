@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { startCaptureHandler, stopCaptureHandler, checkRtspHandler, startStreamHandler, stopStreamHandler } = require('../handlers/cameraStreamHandlers');
+const { startCaptureHandler, stopCaptureHandler, checkRtspHandler, startStreamHandler, stopStreamHandler, streamToFacebook, startFacebookStreamHandler, stopFacebookStreamHandler } = require('../handlers/cameraStreamHandlers');
 const path = require('path');
 const { authenticate, authorize } = require('../middlewares/auth');
 const CameraCtrl = require('../controllers/camera.controller');
@@ -28,6 +28,8 @@ router.post('/api/camera/:cameraId/start-capture', authorize, startCaptureHandle
 router.post('/api/camera/:cameraId/stop-capture', authorize, stopCaptureHandler);
 router.post('/api/camera/:cameraId/start-stream', authorize, startStreamHandler);
 router.post('/api/camera/:cameraId/stop-stream', authorize, stopStreamHandler);
+router.post('/api/camera/:cameraId/start-stream-facebook', authorize, startFacebookStreamHandler);
+router.post('/api/camera/:cameraId/stop-stream-facebook', authorize, stopFacebookStreamHandler);
 router.post('/api/camera/:cameraId/check-rtsp', authorize, checkRtspHandler);
 
 module.exports = router;

@@ -33,7 +33,7 @@ app.use('/', router);
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
-    setInterval(cameraController.cleanVideos, intervalTime)
+    setInterval(cameraController.cleanVideos, intervalTime);
     cameraController.resetAllCamerasStatusToReady();
     console.log(`Clean successfully`);
 });
