@@ -194,7 +194,9 @@ const VideoSegmentsList = ({ cameraId, showDefault }) => {
             </div>
           </div>
         )}
-        {currentTab === CAMERA_TAB.SCORE && <LiveScore ref={liveScoreRef} />}
+        {currentTab === CAMERA_TAB.SCORE && (
+          <LiveScore ref={liveScoreRef} cameraId={cameraId} />
+        )}
       </div>
     </>
   );
