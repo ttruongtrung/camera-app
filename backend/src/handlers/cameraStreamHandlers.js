@@ -225,7 +225,7 @@ const startFacebookStreamHandler = async (req, res) => {
   if (!cameraStreamingStatus[cameraId].isStreaming) {
       cameraStreamingStatus[cameraId].isStreaming = true;
       startFacebookStream(cameraId, rtsp);
-      await CameraCtrl.updateCameraStatus(cameraId, isStreaming = true);
+      await CameraCtrl.updateCameraStatus(cameraId, null , true);
       res.status(200).send(`Facebook Streaming process started successfully for camera ${cameraId}.`);
   } else {
       res.status(400).send(`Facebook Streaming process is already running for camera ${cameraId}.`);
@@ -281,7 +281,7 @@ const stopFacebookStreamHandler = async (req, res) => {
       }
 
       try {
-          await CameraCtrl.updateCameraStatus(cameraId, isStreaming = false);
+          await CameraCtrl.updateCameraStatus(cameraId, isCapturing = null, isStreaming = false);
           res.status(200).send(`Facebook Streaming stopped successfully for camera ${cameraId}.`);
       } catch (err) {
           res.status(500).send(`Error stopping streaming for camera ${cameraId}: ${err.message}`);
