@@ -1,5 +1,5 @@
-const db = require('../models/dbconnect');
-const Match = db.match;
+const db = require('../models');
+const Match = db.Match;
 
 module.exports = {
   createMatches: async (req, res) => {

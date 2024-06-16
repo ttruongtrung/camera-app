@@ -1,6 +1,6 @@
-const db = require('../models/dbconnect');
-const Camera = db.camera;
-const Videos = db.videoSegment
+const db = require('../models');
+const Camera = db.Camera;
+const Videos = db.VideoSegment
 const CAMERA_STATUS = require('../constants');
 const cron = require('node-cron');
 const moment = require('moment');
@@ -18,6 +18,7 @@ module.exports = {
         model_type: req.body.model_type,
         name: req.body.name,
         ip_address: req.body.ip_address,
+        streamingStatus : 'ready',
         username: req.body.username,
         password: req.body.password
       };

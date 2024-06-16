@@ -93,7 +93,7 @@ function startStreaming(cameraId, rtsp) {
 // Start facebook stream
 function startFacebookStream(cameraId, rtsp) {
   const RTMP_URL = 'rtmps://live-api-s.facebook.com:443/rtmp/';
-  const streamkey = 'FB-431236693223940-0-AbwiN-LgaPuXRluz';
+  const streamkey = 'FB-431798116501131-0-AbxcXthIUh6rBzlv';
   console.log(`Start streaming camera ${cameraId} to Facebook with stream key: ${streamkey}`);
 
   updateScoreboard();
@@ -136,7 +136,7 @@ function startFacebookStream(cameraId, rtsp) {
 
   ffmpeg.on('close', (code) => {
     console.log(`ffmpeg process for camera ${cameraId} streaming to Facebook exited with code ${code}`);
-    delete facebookStreamingProcess[cameraId]; 
+    // delete facebookStreamingProcess[cameraId]; 
   });
 }
 
