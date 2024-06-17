@@ -20,7 +20,7 @@ const EditableDiv = ({ content, setContent, divClassName, inputClassName }) => {
       )}
       {isEditing ? (
         <input
-          className={`${inputClassName} outline-none px-2 py-1 border rounded w-[140px] h-8`}
+          className={`${inputClassName} outline-none px-2 py-1 border rounded h-8`}
           type="text"
           ref={inputRef}
           defaultValue={content}

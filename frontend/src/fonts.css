@@ -1,5 +1,5 @@
 
-@font-face {
+/* @font-face {
   font-family: 'Integral';
   src: url('../public/fonts/integral/SVN-IntegralCF-Regular.ttf');
   font-weight: 400;
@@ -27,4 +27,142 @@
   font-family: 'Integral';
   src: url('../public/fonts/integral/SVN-IntegralCF-ExtraBold.ttf');
   font-weight: 800;
+} */
+
+/* Sigmund Pro font definitions */
+
+/* Extra Light */
+@font-face {
+  font-family: 'SigmundPro';
+  src: url('../public/fonts/sigmund/Fontspring-DEMO-sigmundpro-extralight.otf') format('opentype');
+  font-weight: 200;
+  font-style: normal;
 }
+
+@font-face {
+  font-family: 'SigmundPro';
+  src: url('../public/fonts/sigmund/Fontspring-DEMO-sigmundpro-extralightitalic.otf') format('opentype');
+  font-weight: 200;
+  font-style: italic;
+}
+
+/* Light */
+@font-face {
+  font-family: 'SigmundPro';
+  src: url('../public/fonts/sigmund/Fontspring-DEMO-sigmundpro-light.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'SigmundPro';
+  src: url('../public/fonts/sigmund/Fontspring-DEMO-sigmundpro-lightitalic.otf') format('opentype');
+  font-weight: 300;
+  font-style: italic;
+}
+
+/* Regular */
+@font-face {
+  font-family: 'SigmundPro';
+  src: url('../public/fonts/sigmund/Fontspring-DEMO-sigmundpro-regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'SigmundPro';
+  src: url('../public/fonts/sigmund/Fontspring-DEMO-sigmundpro-italic.otf') format('opentype');
+  font-weight: 400;
+  font-style: italic;
+}
+
+/* Medium */
+@font-face {
+  font-family: 'SigmundPro';
+  src: url('../public/fonts/sigmund/Fontspring-DEMO-sigmundpro-medium.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'SigmundPro';
+  src: url('../public/fonts/sigmund/Fontspring-DEMO-sigmundpro-mediumitalic.otf') format('opentype');
+  font-weight: 500;
+  font-style: italic;
+}
+
+/* SemiBold */
+@font-face {
+  font-family: 'SigmundPro';
+  src: url('../public/fonts/sigmund/Fontspring-DEMO-sigmundpro-semibold.otf') format('opentype');
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'SigmundPro';
+  src: url('../public/fonts/sigmund/Fontspring-DEMO-sigmundpro-semibolditalic.otf') format('opentype');
+  font-weight: 600;
+  font-style: italic;
+}
+
+/* Bold */
+@font-face {
+  font-family: 'SigmundPro';
+  src: url('../public/fonts/sigmund/Fontspring-DEMO-sigmundpro-bold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'SigmundPro';
+  src: url('../public/fonts/sigmund/Fontspring-DEMO-sigmundpro-bolditalic.otf') format('opentype');
+  font-weight: 700;
+  font-style: italic;
+}
+
+/* Heavy */
+@font-face {
+  font-family: 'SigmundPro';
+  src: url('../public/fonts/sigmund/Fontspring-DEMO-sigmundpro-heavy.otf') format('opentype');
+  font-weight: 800;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'SigmundPro';
+  src: url('../public/fonts/sigmund/Fontspring-DEMO-sigmundpro-heavyitalic.otf') format('opentype');
+  font-weight: 800;
+  font-style: italic;
+}
+
+/* Thin */
+@font-face {
+  font-family: 'SigmundPro';
+  src: url('../public/fonts/sigmund/Fontspring-DEMO-sigmundpro-thin.otf') format('opentype');
+  font-weight: 100;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'SigmundPro';
+  src: url('../public/fonts/sigmund/Fontspring-DEMO-sigmundpro-thinitalic.otf') format('opentype');
+  font-weight: 100;
+  font-style: italic;
+}
+
+/* UltraLight */
+@font-face {
+  font-family: 'SigmundPro';
+  src: url('../public/fonts/sigmund/Fontspring-DEMO-sigmundpro-ultralight.otf') format('opentype');
+  font-weight: 200;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'SigmundPro';
+  src: url('../public/fonts/sigmund/Fontspring-DEMO-sigmundpro-ultralightitalic.otf') format('opentype');
+  font-weight: 200;
+  font-style: italic;
+}
+

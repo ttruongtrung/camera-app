@@ -6,6 +6,7 @@ import {
   useState,
 } from 'react';
 import { IoAddCircleOutline, IoRemoveCircleOutline } from 'react-icons/io5';
+import { CgAddR, CgRemoveR } from "react-icons/cg";
 import EditableDiv from './EditableDiv';
 import { format } from 'date-fns';
 import axios from 'axios';
@@ -44,8 +45,6 @@ const LiveScore = (props, ref) => {
       );
 
       setMatches(response.data);
-
-      console.log(response);
     };
 
     fetchMatches();
@@ -125,71 +124,70 @@ const LiveScore = (props, ref) => {
         Trận {totalMatch}
       </div>
       {/* Score */}
-      <div>
-        <div className="grid grid-cols-[1fr_1fr] gap-10 justify-center mb-1">
+
+      <div className="text-center text-lg flex gap-4 justify-center items-center py-2">
+        <IoRemoveCircleOutline
+          className="cursor-pointer"
+          size={36}
+          onClick={handleDecreaseRace}
+        />
+        <span>Race: {match.race}</span>
+        <IoAddCircleOutline
+          className="cursor-pointer"
+          size={36}
+          onClick={handleIncreaseRace}
+        />
+      </div>
+      <div className="flex gap-2 items-center justify-center p-2">
+        <div className="text-3xl p-8 bg-orange-600 rounded-md">
           <EditableDiv
             content={match.player1Name}
             setContent={handlePlayer1NameChange}
-            divClassName="text-center text-2xl text-[#0284c7] whitespace-nowrap overflow-hidden text-ellipsis max-w-[160px]"
-            inputClassName="text-[#0284c7]"
+            divClassName="text-center text-2xl text-white whitespace-nowrap overflow-hidden text-ellipsis w-[100px]"
+            inputClassName="text-[#0284c7] text-base w-[100px]"
           />
+          <div className="flex-1 flex justify-center items-center p-4 text-[60px] rounded-tl rounded-bl my-4">
+            {match.player1Score}
+          </div>
+          <div className="flex justify-center gap-4 px-1">
+            <CgAddR
+              className="cursor-pointer"
+              size={40}
+              onClick={() => handleIncreaseScore(1)}
+            />
+            <CgRemoveR
+              className="cursor-pointer"
+              size={40}
+              onClick={() => handleDecreaseScore(1)}
+            />
+          </div>
+        </div>
+        <div>Reset</div>
+        <div className="text-3xl p-8 bg-orange-600 rounded-md">
           <EditableDiv
             content={match.player2Name}
             setContent={handlePlayer2NameChange}
-            divClassName="text-center text-2xl text-[#dc2626] whitespace-nowrap overflow-hidden text-ellipsis max-w-[160px]"
-            inputClassName="text-[#dc2626]"
+            divClassName="text-center text-2xl text-white whitespace-nowrap overflow-hidden text-ellipsis w-[100px]"
+            inputClassName="text-[#dc2626] text-base w-[100px]"
           />
-        </div>
-        <div className="text-center text-lg flex gap-4 justify-center items-center py-2">
-          <IoRemoveCircleOutline
-            className="cursor-pointer"
-            size={36}
-            onClick={handleDecreaseRace}
-          />
-          <span>Race: {match.race}</span>
-          <IoAddCircleOutline
-            className="cursor-pointer"
-            size={36}
-            onClick={handleIncreaseRace}
-          />
-        </div>
-        <div className="grid grid-cols-[1fr_1fr]">
-          <div className="flex align-center">
-            <div className="flex flex-col justify-center gap-4 px-1">
-              <IoAddCircleOutline
-                className="cursor-pointer"
-                size={40}
-                onClick={() => handleIncreaseScore(1)}
-              />
-              <IoRemoveCircleOutline
-                className="cursor-pointer"
-                size={40}
-                onClick={() => handleDecreaseScore(1)}
-              />
-            </div>
-            <div className="flex-1 flex justify-center items-center bg-[#0284c7] p-4 text-[40px] rounded-tl rounded-bl">
-              {match.player1Score}
-            </div>
+          <div className="flex-1 flex justify-center items-center p-4 text-[60px] rounded-tl rounded-bl my-4">
+            {match.player2Score}
           </div>
-          <div className="flex align-center">
-            <div className="flex-1 flex justify-center items-center bg-[#ef4444] p-4 text-[40px] rounded-tr rounded-br">
-              {match.player2Score}
-            </div>
-            <div className="flex flex-col justify-center gap-4 px-1">
-              <IoAddCircleOutline
-                className="cursor-pointer"
-                size={40}
-                onClick={() => handleIncreaseScore(2)}
-              />
-              <IoRemoveCircleOutline
-                className="cursor-pointer"
-                size={40}
-                onClick={() => handleDecreaseScore(2)}
-              />
-            </div>
+          <div className="flex justify-center gap-4 px-1">
+            <CgAddR
+              className="cursor-pointer"
+              size={40}
+              onClick={() => handleIncreaseScore(2)}
+            />
+            <CgRemoveR
+              className="cursor-pointer"
+              size={40}
+              onClick={() => handleDecreaseScore(2)}
+            />
           </div>
         </div>
       </div>
+
       <div className="mt-8 px-2">
         <div className="text-2xl text-center mb-2">Thống kê</div>
         <div className="grid grid-cols-[repeat(4,1fr)] text-sm text-white bg-gray-400">
