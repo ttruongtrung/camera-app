@@ -1,13 +1,12 @@
 const { DataTypes } = require('sequelize');
 
-module.exports = (sequelize, Sequelize) => {
-  const Camera = sequelize.define('videos_camera', {
-    // id: {
-    //   type: DataTypes.INTEGER,
-    //   primaryKey: true,
-    //   autoIncrement: true
-    // },
+module.exports = (sequelize) => {
+  const Camera = sequelize.define('Camera', {
     status: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    streamingStatus: {
       type: DataTypes.STRING,
       allowNull: false
     },
@@ -41,17 +40,14 @@ module.exports = (sequelize, Sequelize) => {
       allowNull: false,
       defaultValue: DataTypes.NOW
     }
+  }, {
+    tableName: 'videos_cameras'
   });
+
+  Camera.associate = (models) => {
+    Camera.hasMany(models.VideoSegment, { as: 'video_segments', foreignKey: 'cameraId' });
+    Camera.hasMany(models.Match, { as: 'video_matches', foreignKey: 'cameraId' });
+  };
 
   return Camera;
 };
-
-/**
- * create new Camera: create(object)
- * find a Camera: findByPk(id)
- * get all Camera: findAll()
- * update a Camera: update(data, where: { id: id })
- * remove a Camera: destroy(where: { id: id })
- * remove all Camera: destroy(where: {})
- * find all Camera by title: findAll({ where: { title: ... } })
- */

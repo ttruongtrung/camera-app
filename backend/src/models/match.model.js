@@ -1,12 +1,7 @@
 const { DataTypes } = require('sequelize');
 
-module.exports = (sequelize, Sequelize) => {
-  const Match = sequelize.define('videos_match', {
-    // id: {
-    //   type: DataTypes.INTEGER,
-    //   primaryKey: true,
-    //   autoIncrement: true
-    // },
+module.exports = (sequelize) => {
+  const Match = sequelize.define('Match', {
     player1Name: {
       type: DataTypes.STRING,
       allowNull: false
@@ -32,9 +27,17 @@ module.exports = (sequelize, Sequelize) => {
       allowNull: false
     },
     time: {
-			type: DataTypes.DATE,
-			allowNull: true
-		},
+      type: DataTypes.DATE,
+      allowNull: true
+    },
+    cameraId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'videos_cameras',
+        key: 'id'
+      }
+    },
     createdAt: {
       type: DataTypes.DATE,
       allowNull: false,
@@ -45,8 +48,13 @@ module.exports = (sequelize, Sequelize) => {
       allowNull: false,
       defaultValue: DataTypes.NOW
     }
+  }, {
+    tableName: 'videos_matchs'
   });
+
+  Match.associate = (models) => {
+    Match.belongsTo(models.Camera, { foreignKey: 'cameraId', as: 'camera' });
+  };
 
   return Match;
 };
-

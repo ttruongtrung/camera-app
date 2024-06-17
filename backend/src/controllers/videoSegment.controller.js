@@ -1,4 +1,4 @@
-const db = require('../models/dbconnect');
+const db = require('../models');
 const VideoSegment = db.videoSegment;
 
 module.exports = {
