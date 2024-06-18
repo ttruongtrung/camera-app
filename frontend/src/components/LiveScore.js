@@ -7,6 +7,7 @@ import {
 } from 'react';
 import { IoAddCircleOutline, IoRemoveCircleOutline } from 'react-icons/io5';
 import { CgAddR, CgRemoveR } from "react-icons/cg";
+import { IoCheckmarkDoneSharp } from "react-icons/io5";
 import EditableDiv from './EditableDiv';
 import { format } from 'date-fns';
 import axios from 'axios';
@@ -124,7 +125,6 @@ const LiveScore = (props, ref) => {
         Trận {totalMatch}
       </div>
       {/* Score */}
-
       <div className="text-center text-lg flex gap-4 justify-center items-center py-2">
         <IoRemoveCircleOutline
           className="cursor-pointer"
@@ -189,42 +189,36 @@ const LiveScore = (props, ref) => {
       </div>
 
       <div className="mt-8 px-2">
-        <div className="text-2xl text-center mb-2">Thống kê</div>
-        <div className="grid grid-cols-[repeat(4,1fr)] text-sm text-white bg-gray-400">
-          <div className="px-1 py-4 text-center border border-[white]">
-            Trận
-          </div>
-          <div className="px-1 py-4 text-center border border-[white] whitespace-nowrap overflow-hidden text-ellipsis">
-            {match.player1Name}
-          </div>
-          <div className="px-1 py-4 text-center border border-[white] whitespace-nowrap overflow-hidden text-ellipsis">
-            {match.player2Name}
-          </div>
-          <div className="px-1 py-4 text-center border border-[white]">
-            Thời gian
-          </div>
+        <div className="flex justify-center mt-10 rounded-lg overflow-hidden">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-slate-500 font-semibold">
+              <tr className="">
+                <th className="px-6 py-3 text-xs uppercase text-center tracking-wider">#</th>
+                <th className="px-6 py-3 text-xs uppercase text-center tracking-wider">{match.player1Name}</th>
+                <th className="px-6 py-3 text-xs uppercase text-center tracking-wider">{match.player2Name}</th>
+                <th className="px-6 py-3 text-xs uppercase text-center tracking-wider">Thời gian</th>
+              </tr>
+            </thead>
+            <tbody>
+              {matches.map((m, index) => (
+                <tr key={index} className={index % 2 === 0 ? 'bg-orange-400' : 'bg-orangeLight'}>
+                  <td className="px-6 py-2 text-center whitespace-nowrap text-sm">Trận {index + 1}</td>
+                  {/* <td className="px-6 py-2 text-center whitespace-nowrap">{m.player1Score}</td>
+                  <td className="px-6 py-2 text-center whitespace-nowrap">{m.player2Score}</td> */}
+                  <td colSpan="2" className="px-6 py-2 text-center align-middle whitespace-nowrap font-bold">
+                    <div className="flex gap-2 justify-center items-center">
+                      <IoCheckmarkDoneSharp className={`inline text-blue-500 ${m.playerWin !== 1 ? 'opacity-0' : ''}`}/>
+                      {m.player1Score} - {m.player2Score}
+                      <IoCheckmarkDoneSharp className={`inline text-blue-700 ${m.playerWin !== 2 ? 'opacity-0' : ''}`}/>
+                    </div>
+                  </td>
+                  <td className="px-6 py-2 text-center whitespace-nowrap text-sm italic">{format(m.time, 'HH:mm')}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
-        {matches.map((m, index) => (
-          <div
-            key={index}
-            className={`grid grid-cols-[repeat(4,1fr)] text-xl text-white ${
-              m.playerWin === 1 ? 'bg-[#0284c7]' : 'bg-[#ef4444]'
-            }`}
-          >
-            <div className="p-4 text-center border border-[white]">
-              {index + 1}
-            </div>
-            <div className="p-4 text-center border border-[white]">
-              {m.player1Score}
-            </div>
-            <div className="p-4 text-center border border-[white]">
-              {m.player2Score}
-            </div>
-            <div className="p-4 text-center border border-[white]">
-              {format(m.time, 'HH:mm')}
-            </div>
-          </div>
-        ))}
+
       </div>
     </div>
   );
