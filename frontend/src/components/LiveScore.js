@@ -139,17 +139,17 @@ const LiveScore = (props, ref) => {
         />
       </div>
       <div className="flex gap-2 items-center justify-center p-2">
-        <div className="text-3xl p-8 bg-orange-600 rounded-md">
+        <div className="text-3xl p-8 bg-blue-400 rounded-md">
           <EditableDiv
             content={match.player1Name}
             setContent={handlePlayer1NameChange}
-            divClassName="text-center text-2xl text-white whitespace-nowrap overflow-hidden text-ellipsis w-[100px]"
+            divClassName="text-center text-2xl text-blue-700 whitespace-nowrap overflow-hidden text-ellipsis w-[100px]"
             inputClassName="text-[#0284c7] text-base w-[100px]"
           />
-          <div className="flex-1 flex justify-center items-center p-4 text-[60px] rounded-tl rounded-bl my-4">
+          <div className="flex-1 flex justify-center items-center p-4 text-[60px] rounded-tl rounded-bl my-4 text-blue-700">
             {match.player1Score}
           </div>
-          <div className="flex justify-center gap-4 px-1">
+          <div className="flex justify-center gap-4 px-1 text-blue-700">
             <CgAddR
               className="cursor-pointer"
               size={40}
@@ -163,17 +163,17 @@ const LiveScore = (props, ref) => {
           </div>
         </div>
         <div>Reset</div>
-        <div className="text-3xl p-8 bg-orange-600 rounded-md">
+        <div className="text-3xl p-8 bg-red-400 rounded-md">
           <EditableDiv
             content={match.player2Name}
             setContent={handlePlayer2NameChange}
-            divClassName="text-center text-2xl text-white whitespace-nowrap overflow-hidden text-ellipsis w-[100px]"
+            divClassName="text-center text-2xl text-red-700 whitespace-nowrap overflow-hidden text-ellipsis w-[100px]"
             inputClassName="text-[#dc2626] text-base w-[100px]"
           />
-          <div className="flex-1 flex justify-center items-center p-4 text-[60px] rounded-tl rounded-bl my-4">
+          <div className="flex-1 flex justify-center items-center p-4 text-[60px] rounded-tl rounded-bl my-4 text-red-700">
             {match.player2Score}
           </div>
-          <div className="flex justify-center gap-4 px-1">
+          <div className="flex justify-center gap-4 px-1 text-red-700">
             <CgAddR
               className="cursor-pointer"
               size={40}
@@ -201,7 +201,7 @@ const LiveScore = (props, ref) => {
             </thead>
             <tbody>
               {matches.map((m, index) => (
-                <tr key={index} className={index % 2 === 0 ? 'bg-orange-400' : 'bg-orangeLight'}>
+                <tr key={index} className={m.playerWin === 1 ? 'bg-blue-400 border-b border-white' : 'bg-red-400 border-b border-white'}>
                   <td className="px-6 py-2 text-center whitespace-nowrap text-sm">Trận {index + 1}</td>
                   {/* <td className="px-6 py-2 text-center whitespace-nowrap">{m.player1Score}</td>
                   <td className="px-6 py-2 text-center whitespace-nowrap">{m.player2Score}</td> */}

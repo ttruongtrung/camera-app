@@ -10,6 +10,7 @@ import InputSearch from './InputSearch';
 import { isIOS } from '../utils/checkDevice';
 import { CAMERA_TAB } from '../constants/Camera';
 import LiveScore from './LiveScore';
+import VideoLiveStream from './VideoLiveStream';
 
 const formatTime = (dateString) => {
   const date = parseISO(dateString);
@@ -89,7 +90,7 @@ const VideoSegmentsList = ({ cameraId, showDefault }) => {
   return (
     <>
       <div className="max-w-full md:max-w-xl mb-6">
-        {currentSegment ? (
+        {currentTab === CAMERA_TAB.SCORE && currentSegment ? (
           <div className="p-4 overflow-hidden min-w-[310px] mb-4">
             <div className="relative rounded overflow-hidden w-[500px] max-w-full md:max-w-xl">
               {isIosDevice ? (
@@ -115,16 +116,22 @@ const VideoSegmentsList = ({ cameraId, showDefault }) => {
               )}
             </div>
           </div>
-        ) : (
-          <div className="p-4 rounded overflow-hidden min-w-[310px] mb-4">
-            <div className="rounded overflow-hidden w-[500px] max-w-full md:max-w-xl">
-              <div className="h-[250px] bg-gray-400 flex items-center justify-center gap-4">
-                <div className="w-6 h-6 rounded-full bg-white"></div>
-                <div className="w-6 h-6 rounded-full bg-white"></div>
-                <div className="w-6 h-6 rounded-full bg-white"></div>
+        ) : ( currentTab === CAMERA_TAB.SCORE 
+            ? 
+              <VideoLiveStream 
+                cameraId={cameraId} 
+                className="relative rounded overflow-hidden w-[500px] max-w-full md:max-w-xl"
+              />
+            :
+              <div className="p-4 rounded overflow-hidden min-w-[310px] mb-4">
+                <div className="rounded overflow-hidden w-[500px] max-w-full md:max-w-xl">
+                  <div className="h-[250px] bg-gray-400 flex items-center justify-center gap-4">
+                    <div className="w-6 h-6 rounded-full bg-white"></div>
+                    <div className="w-6 h-6 rounded-full bg-white"></div>
+                    <div className="w-6 h-6 rounded-full bg-white"></div> 
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
         )}
       </div>
       <div className="bg-orangeLight pb-8 min-w-[310px] w-full relative mt-6 rounded-lg">
@@ -162,7 +169,7 @@ const VideoSegmentsList = ({ cameraId, showDefault }) => {
             <div className="flex px-8 gap-2 items-center justify-center w-full">
               <InputSearch ref={inputRef} handleSearch={handleSearch} />
             </div>
-            <div className="flex flex-col gap-2 max-h-[430px] overflow-scroll px-2">
+            <div className="flex flex-col gap-2 max-h-[430px] overflow-auto px-2">
               {filterSegments.length > 0 ? (
                 filterSegments.map((segment, index) => (
                   <div
@@ -195,7 +202,10 @@ const VideoSegmentsList = ({ cameraId, showDefault }) => {
           </div>
         )}
         {currentTab === CAMERA_TAB.SCORE && (
-          <LiveScore ref={liveScoreRef} cameraId={cameraId} />
+          <>
+            {/* <VideoLiveStream cameraId={cameraId}/> */}
+            <LiveScore ref={liveScoreRef} cameraId={cameraId} />
+          </>
         )}
       </div>
     </>

@@ -82,7 +82,7 @@ const CameraPanel = ({ camera, onClick, isSelected }) => {
       console.log(data);
       const response = await axios.post(
         // `${apiPath}/api/camera/${camera.id}/start-capture`,
-        `${apiPath}/api/camera/${camera.id}/start-stream-facebook`,
+        `${apiPath}/api/camera/${camera.id}/start-stream`,
         data,
         config 
       );
@@ -97,7 +97,7 @@ const CameraPanel = ({ camera, onClick, isSelected }) => {
     try {
       const response = await axios.post(
         // `${apiPath}/api/camera/${camera.id}/stop-capture`,
-        `${apiPath}/api/camera/${camera.id}/stop-stream-facebook`,
+        `${apiPath}/api/camera/${camera.id}/stop-stream`,
         {},
         config 
       );
