@@ -3,6 +3,7 @@ import axios from 'axios';
 import { BsFillPlayCircleFill, BsPauseCircleFill } from 'react-icons/bs';
 import { SiStatuspal } from 'react-icons/si';
 import { PiWaveform } from 'react-icons/pi';
+import { MdLiveTv } from "react-icons/md";
 import {
   MdOutlineModeEdit,
   MdOutlineDeleteOutline,
@@ -15,11 +16,15 @@ import QrModal from './modals/QrModal';
 import { CAMERA_STATUS } from '../constants/Camera';
 import { getRTSPlink } from '../utils/rtspHandler';
 import { AuthContext } from '../auth/AuthContext';
+import ToggleButton from './ToggleButton';
 
 const CameraPanel = ({ camera, onClick, isSelected }) => {
   const [videoLength, setVideoLength] = useState('5');
-  const [isStreaming, setIsStreaming] = useState(
+  const [isCaptureStream, setIsCaptureStream] = useState(
     camera.status === CAMERA_STATUS.STARTING
+  );
+  const [isLiveStream, setIsLiveStream] = useState(
+    camera.streamingStatus === CAMERA_STATUS.STREAMING
   );
   const [openEditModal, setOpenEditModal] = useState(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
@@ -34,9 +39,14 @@ const CameraPanel = ({ camera, onClick, isSelected }) => {
     }
   };
 
-  const handleStreaming = (e) => {
-    e.stopPropagation();
-    isStreaming ? stopStream() : startStream();
+  const handleCaptureStream = (value) => {
+    !value ? stopCaptureStream() : startCaptureStream();
+    setIsCaptureStream(value);
+  };
+
+  const handleLiveStream = (value) => {
+    !value ? stopLiveStream() : startLiveStream();
+    setIsLiveStream(value);
   };
 
   const handleOpenEditModal = (e) => {
@@ -67,7 +77,7 @@ const CameraPanel = ({ camera, onClick, isSelected }) => {
     }
   };
 
-  const startStream = async () => {
+  const startCaptureStream = async () => {
     try {
       const rtsp = getRTSPlink(
         camera.model_type,
@@ -81,28 +91,65 @@ const CameraPanel = ({ camera, onClick, isSelected }) => {
       };
       console.log(data);
       const response = await axios.post(
-        // `${apiPath}/api/camera/${camera.id}/start-capture`,
-        `${apiPath}/api/camera/${camera.id}/start-stream`,
+        `${apiPath}/api/camera/${camera.id}/start-capture`,
         data,
         config 
       );
       console.log('Start stream', response);
-      setIsStreaming(true);
+      setIsCaptureStream(true);
     } catch (error) {
       console.error('Error starting stream:', error);
     }
   };
 
-  const stopStream = async () => {
+  const stopCaptureStream = async () => {
     try {
       const response = await axios.post(
-        // `${apiPath}/api/camera/${camera.id}/stop-capture`,
+        `${apiPath}/api/camera/${camera.id}/stop-capture`,
+        {},
+        config 
+      );
+      console.log('Stop stream', response);
+      setIsCaptureStream(false);
+    } catch (error) {
+      console.error('Error starting stream:', error);
+    }
+  };
+  
+  const startLiveStream = async () => {
+    try {
+      const rtsp = getRTSPlink(
+        camera.model_type,
+        camera.ip_address,
+        camera.username,
+        camera.password
+      );
+      const data = {
+        rtspLink: rtsp,
+        videoLength: Number(videoLength),
+      };
+      console.log(data);
+      const response = await axios.post(
+        `${apiPath}/api/camera/${camera.id}/start-stream`,
+        data,
+        config 
+      );
+      console.log('Start stream', response);
+      setIsLiveStream(true);
+    } catch (error) {
+      console.error('Error starting stream:', error);
+    }
+  };
+
+  const stopLiveStream = async () => {
+    try {
+      const response = await axios.post(
         `${apiPath}/api/camera/${camera.id}/stop-stream`,
         {},
         config 
       );
       console.log('Stop stream', response);
-      setIsStreaming(false);
+      setIsLiveStream(false);
     } catch (error) {
       console.error('Error starting stream:', error);
     }
@@ -174,7 +221,7 @@ const CameraPanel = ({ camera, onClick, isSelected }) => {
             </div>
           </div>
         </div>
-        <div className="flex justify-between items-center">
+        <div className="flex flex-col gap-5">
           <div>
             <div className="flex items-center gap-x-2 mt-2">
               <SiStatuspal size={24} />
@@ -186,17 +233,34 @@ const CameraPanel = ({ camera, onClick, isSelected }) => {
             <div className="flex items-center gap-x-2 mt-2">
               <PiWaveform size={24} />
               <span className="font-bold text-gray-500 text-sm">
-                Trạng Thái:
+                Cắt video:
               </span>
               <span
                 className={`${
-                  isStreaming
+                  isCaptureStream
                     ? 'bg-lime-400 text-lime-700'
                     : 'bg-gray-300 text-gray-500'
                 } px-2 rounded-md font-semibold`}
               >
-                {isStreaming ? 'Đang stream' : 'Tạm dừng'}
+                {isCaptureStream ? 'Đang cắt' : 'Tạm dừng'}
               </span>
+              <ToggleButton className="flex-1 justify-end" isToggled={isCaptureStream} handleClick={handleCaptureStream} />
+            </div>
+            <div className="flex items-center gap-x-2 mt-2">
+              <MdLiveTv size={24} />
+              <span className="font-bold text-gray-500 text-sm">
+                Live stream:
+              </span>
+              <span
+                className={`${
+                  isLiveStream
+                    ? 'bg-lime-400 text-lime-700'
+                    : 'bg-gray-300 text-gray-500'
+                } px-2 rounded-md font-semibold`}
+              >
+                {isLiveStream ? 'Đang stream' : 'Tạm dừng'}
+              </span>
+              <ToggleButton className="flex-1 justify-end" isToggled={isLiveStream} handleClick={handleLiveStream} />
             </div>
             <div
               className="flex items-center gap-x-2 mt-2 text-blue-500 transition relative"
@@ -207,7 +271,7 @@ const CameraPanel = ({ camera, onClick, isSelected }) => {
                 Tạo QR code link
               </span>
             </div>
-            {!isStreaming && (
+            {!isCaptureStream && (
               <div className="mt-2">
                 <p className="font-bold text-gray-500 text-sm mb-1">
                   Chọn độ dài video:
@@ -242,20 +306,6 @@ const CameraPanel = ({ camera, onClick, isSelected }) => {
                   </div>
                 </form>
               </div>
-            )}
-          </div>
-          {/* <button className="mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-          Action
-        </button> */}
-          <div
-            onClick={handleStreaming}
-            // onClick={handleCheckRTSPStream}
-            className="cursor-pointer text-blue-500 hover:text-blue-700 transition duration-300 ease-in-out relative"
-          >
-            {!isStreaming ? (
-              <BsFillPlayCircleFill size={48} />
-            ) : (
-              <BsPauseCircleFill size={48} />
             )}
           </div>
         </div>

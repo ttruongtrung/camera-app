@@ -134,7 +134,7 @@ const VideoSegmentsList = ({ cameraId, showDefault }) => {
               </div>
         )}
       </div>
-      <div className="bg-orangeLight pb-8 min-w-[310px] w-full relative mt-6 rounded-lg">
+      <div className="bg-orangeLight pb-8 min-w-[310px] w-full relative mt-6 rounded-lg rounded-bl-none rounded-br-none">
         {/* Tab section */}
         <div className="grid grid-cols-[1fr_1fr] px-6 justify-center cursor-pointer relative -translate-y-6">
           <div

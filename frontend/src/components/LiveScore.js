@@ -13,7 +13,7 @@ import { format } from 'date-fns';
 import axios from 'axios';
 
 const LiveScore = (props, ref) => {
-  const [totalMatch, setTotalMatch] = useState(2);
+  const [totalMatch, setTotalMatch] = useState(1);
   const initMatch = {
     player1Name: 'Player 1',
     player2Name: 'Player 2',
@@ -33,6 +33,7 @@ const LiveScore = (props, ref) => {
     resetMatch() {
       setMatch(initMatch);
       setMatches([]);
+      setTotalMatch(1);
       deleteMatches();
     },
   }));
@@ -46,6 +47,7 @@ const LiveScore = (props, ref) => {
       );
 
       setMatches(response.data);
+      setTotalMatch((response.data?.length || 0) + 1)
     };
 
     fetchMatches();
@@ -57,7 +59,7 @@ const LiveScore = (props, ref) => {
     const apiPath = process.env.REACT_APP_BE_API_URL;
 
     await axios.post(`${apiPath}/api/camera/${props.cameraId}/matches`, {
-      matches: [newMatch],
+      match: newMatch,
     });
   };
 
@@ -150,15 +152,15 @@ const LiveScore = (props, ref) => {
             {match.player1Score}
           </div>
           <div className="flex justify-center gap-4 px-1 text-blue-700">
-            <CgAddR
-              className="cursor-pointer"
-              size={40}
-              onClick={() => handleIncreaseScore(1)}
-            />
             <CgRemoveR
               className="cursor-pointer"
               size={40}
               onClick={() => handleDecreaseScore(1)}
+            />
+            <CgAddR
+              className="cursor-pointer"
+              size={40}
+              onClick={() => handleIncreaseScore(1)}
             />
           </div>
         </div>
@@ -174,29 +176,29 @@ const LiveScore = (props, ref) => {
             {match.player2Score}
           </div>
           <div className="flex justify-center gap-4 px-1 text-red-700">
-            <CgAddR
-              className="cursor-pointer"
-              size={40}
-              onClick={() => handleIncreaseScore(2)}
-            />
             <CgRemoveR
               className="cursor-pointer"
               size={40}
               onClick={() => handleDecreaseScore(2)}
             />
+            <CgAddR
+              className="cursor-pointer"
+              size={40}
+              onClick={() => handleIncreaseScore(2)}
+            />
           </div>
         </div>
       </div>
 
-      <div className="mt-8 px-2">
+      <div className="mt-8">
         <div className="flex justify-center mt-10 rounded-lg overflow-hidden">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-slate-500 font-semibold">
               <tr className="">
-                <th className="px-6 py-3 text-xs uppercase text-center tracking-wider">#</th>
-                <th className="px-6 py-3 text-xs uppercase text-center tracking-wider">{match.player1Name}</th>
-                <th className="px-6 py-3 text-xs uppercase text-center tracking-wider">{match.player2Name}</th>
-                <th className="px-6 py-3 text-xs uppercase text-center tracking-wider">Thời gian</th>
+                <th className="whitespace-nowrap px-6 py-3 text-xs uppercase text-center tracking-wider">#</th>
+                <th className="whitespace-nowrap px-6 py-3 text-xs uppercase text-center tracking-wider truncate max-w-[120px]">{match.player1Name}</th>
+                <th className="whitespace-nowrap px-6 py-3 text-xs uppercase text-center tracking-wider truncate max-w-[120px]">{match.player2Name}</th>
+                <th className="whitespace-nowrap px-6 py-3 text-xs uppercase text-center tracking-wider">Thời gian</th>
               </tr>
             </thead>
             <tbody>

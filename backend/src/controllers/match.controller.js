@@ -2,30 +2,28 @@ const db = require('../models');
 const Match = db.Match;
 
 module.exports = {
-  createMatches: async (req, res) => {
-    const matches = req.body.matches;
+  createMatch: async (req, res) => {
+    const match = req.body.match;
     const cameraId = req.params.cameraId;
     try {
-      matches.forEach(async (match) => {
-        const MatchData = {
-          cameraId: cameraId,
-          player1Name: match.player1Name,
-          player2Name: match.player2Name,
-          player1Score: match.player1Score,
-          player2Score: match.player2Score,
-          time: match.time,
-          playerWin: match.playerWin,
-          race: match.race,
-        };
+      const MatchData = {
+        cameraId: Number(cameraId),
+        player1Name: match.player1Name,
+        player2Name: match.player2Name,
+        player1Score: match.player1Score,
+        player2Score: match.player2Score,
+        time: match.time,
+        playerWin: match.playerWin,
+        race: match.race,
+      };
 
-        const createdMatch = await Match.create(MatchData);
-        console.log(createdMatch);
-      });
+      const createdMatch = await Match.create(MatchData);
+      console.log(createdMatch);
+      return res.status(201).send({ matches: 'Created matches', success: true });
     } catch (error) {
       console.error('Error creating video segment:', error);
-      return { error: 'Internal server error' };
+      return res.status(500).send({ error: error.message });
     }
-    return res.status(201).send({ matches: 'Created matches', success: true });
   },
 
   deleteAllMatchesByCameraId: async (req, res) => {

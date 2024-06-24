@@ -21,7 +21,7 @@ router.put('/api/camera/:id', authorize, (req, res) => CameraCtrl.updateCamera(r
 router.delete('/api/camera/:id', authorize, (req, res) => CameraCtrl.deleteCameraById(req, res));
 router.get('/api/camera/:cameraId/segments', (req, res) => VideoSegmentCtrl.getVideoSegmentsByCameraId(req, res));
 router.get('/api/camera/:cameraId/matches', (req, res) => MatchCtrl.getAllMatchesByCameraId(req, res));
-router.post('/api/camera/:cameraId/matches', (req, res) => MatchCtrl.createMatches(req, res));
+router.post('/api/camera/:cameraId/matches', (req, res) => MatchCtrl.createMatch(req, res));
 router.delete('/api/camera/:cameraId/matches', (req, res) => MatchCtrl.deleteAllMatchesByCameraId(req, res));
 
 router.post('/api/camera/:cameraId/start-capture', authorize, startCaptureHandler);
