@@ -261,7 +261,7 @@ const stopStreamHandler = async (req, res) => {
       }
 
       try {
-          await CameraCtrl.updateCameraStatus(cameraId, isStreaming = false);
+          await CameraCtrl.updateCameraStatus(cameraId, null,isStreaming = false);
           res.status(200).send(`Streaming stopped successfully for camera ${cameraId}.`);
       } catch (err) {
           res.status(500).send(`Error stopping streaming for camera ${cameraId}: ${err.message}`);
