@@ -271,7 +271,6 @@ const CameraPanel = ({ camera, onClick, isSelected }) => {
                 Tạo QR code link
               </span>
             </div>
-            {!isCaptureStream && (
               <div className="mt-2">
                 <p className="font-bold text-gray-500 text-sm mb-1">
                   Chọn độ dài video:
@@ -283,6 +282,7 @@ const CameraPanel = ({ camera, onClick, isSelected }) => {
                         className="mr-1"
                         type="radio"
                         value="5"
+                        disabled={isCaptureStream}
                         checked={videoLength === '5'}
                         onChange={handleRadioChange}
                       />
@@ -298,6 +298,7 @@ const CameraPanel = ({ camera, onClick, isSelected }) => {
                         className="mr-1"
                         type="radio"
                         value="10"
+                        disabled={isCaptureStream}
                         checked={videoLength === '10'}
                         onChange={handleRadioChange}
                       />
@@ -306,7 +307,6 @@ const CameraPanel = ({ camera, onClick, isSelected }) => {
                   </div>
                 </form>
               </div>
-            )}
           </div>
         </div>
       </div>
