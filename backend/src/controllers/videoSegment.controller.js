@@ -1,5 +1,5 @@
 const db = require('../models');
-const VideoSegment = db.videoSegment;
+const VideoSegment = db.VideoSegment;
 
 module.exports = {
   create: async (req, res) => {

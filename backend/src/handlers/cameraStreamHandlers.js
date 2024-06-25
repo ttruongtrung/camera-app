@@ -204,7 +204,7 @@ const startStreamHandler = async (req, res) => {
   if (!cameraStreamingStatus[cameraId].isStreaming) {
       cameraStreamingStatus[cameraId].isStreaming = true;
       startStreaming(cameraId, rtsp);
-      await CameraCtrl.updateCameraStatus(cameraId, isStreaming = true);
+      await CameraCtrl.updateCameraStatus(cameraId, null, isStreaming = true);
       res.status(200).send(`Streaming process started successfully for camera ${cameraId}.`);
   } else {
       res.status(400).send(`Streaming process is already running for camera ${cameraId}.`);
