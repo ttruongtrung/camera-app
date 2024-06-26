@@ -11,6 +11,7 @@ import { isIOS } from '../utils/checkDevice';
 import { CAMERA_TAB } from '../constants/Camera';
 import LiveScore from './LiveScore';
 import VideoLiveStream from './VideoLiveStream';
+import io from 'socket.io-client';
 
 const formatTime = (dateString) => {
   const date = parseISO(dateString);
@@ -31,18 +32,21 @@ const formatDateTime = (dateTimeString) => {
   return format(date, 'HH:mm dd-MM-yyyy');
 };
 
-const VideoSegmentsList = ({ cameraId, showDefault }) => {
+const VideoSegmentsList = ({ cameraId, showDefault }) => { 
   const [currentTab, setCurrentTab] = useState(CAMERA_TAB.VIDEO);
   const [currentCamera, setCurrentCamera] = useState(null);
   const [currentSegment, setCurrentSegment] = useState(null);
   const [filterSegments, setFilterSegments] = useState([]);
+  const [isStreaming, setIsStreaming] = useState(false);
   const liveScoreRef = useRef();
   const apiPath = process.env.REACT_APP_BE_API_URL;
   const videoUrl = apiPath + '/api/storage/';
   const inputRef = useRef(null);
   const isIosDevice = isIOS();
 
+
   const { data: segments, isLoading, refetch } = useSegmentList(cameraId);
+  const socket = io('http://localhost:3001');
 
   useEffect(() => {
     if (!isLoading && segments) {
@@ -54,7 +58,20 @@ const VideoSegmentsList = ({ cameraId, showDefault }) => {
     if (cameraId !== currentCamera) {
       setCurrentCamera(cameraId);
       setCurrentSegment(null);
+      setCurrentTab(CAMERA_TAB.VIDEO);
     }
+
+    socket.on('connect', () => {
+      console.log('socket connection completed');
+    }); 
+    socket.on('stream_started', (data) => { 
+      if (data.cameraId == cameraId) setIsStreaming(true);
+    }); 
+    socket.on('stream_stopped', (data) => {
+      if (data.cameraId == cameraId) setIsStreaming(false);
+    });  
+    
+    return () => socket.disconnect();
   }, [cameraId]);
 
   const handleSearch = useDebouncedCallback((value) => {
@@ -117,7 +134,20 @@ const VideoSegmentsList = ({ cameraId, showDefault }) => {
               )}
             </div>
           </div>
-        ) : ( currentTab === CAMERA_TAB.SCORE 
+        ) : currentTab === CAMERA_TAB.VIDEO && currentSegment === null ? (
+          <div className="p-4 rounded overflow-hidden min-w-[310px] mb-4">
+            <div className="rounded overflow-hidden w-[500px] max-w-full md:max-w-xl">
+              <div className="h-[250px] bg-gray-400 flex items-center justify-center gap-4 relative">
+                <div className="absolute top-5 left-5 bg-gray-500 text-white px-2 py-1 text-sm font-bold rounded-lg">
+                  Chưa có đoạn video nào được chọn
+                </div>
+                <div className="w-6 h-6 rounded-full bg-white"></div>
+                <div className="w-6 h-6 rounded-full bg-white"></div>
+                <div className="w-6 h-6 rounded-full bg-white"></div>
+              </div>
+            </div>
+          </div>
+        ): ( currentTab === CAMERA_TAB.SCORE && isStreaming
             ? 
               <VideoLiveStream 
                 cameraId={cameraId} 
@@ -126,7 +156,8 @@ const VideoSegmentsList = ({ cameraId, showDefault }) => {
             :
               <div className="p-4 rounded overflow-hidden min-w-[310px] mb-4">
                 <div className="rounded overflow-hidden w-[500px] max-w-full md:max-w-xl">
-                  <div className="h-[250px] bg-gray-400 flex items-center justify-center gap-4">
+                  <div className="h-[250px] bg-gray-400 flex items-center justify-center gap-4 relative">
+                    <div className="absolute top-5 left-5 bg-gray-500 text-white px-2 py-1 text-sm font-bold rounded-lg">Phát trực tiếp đang tạm dừng</div>
                     <div className="w-6 h-6 rounded-full bg-white"></div>
                     <div className="w-6 h-6 rounded-full bg-white"></div>
                     <div className="w-6 h-6 rounded-full bg-white"></div> 

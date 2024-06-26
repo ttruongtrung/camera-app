@@ -12,6 +12,9 @@ const facebookStreamingProcess = {};
 const { createCanvas  } = require('canvas');
 const scoreboardPath = path.join(__dirname, '..', '..', 'public', 'videos', 'scoreboard.png');
 
+let _socketIO;
+const setSocketIO = (socketIoInstance) => _socketIO = socketIoInstance;
+
 
 // Start capture stream for cutting video
 function startCaptureStream(cameraId, rtsp) {
@@ -53,6 +56,7 @@ function startCaptureStream(cameraId, rtsp) {
 // Start stream local 
 function startStreaming(cameraId, rtsp) {
   console.log(`Start streaming for camera ${cameraId}`);
+  _socketIO.emit('stream_started', { cameraId });
   const OUTPUT_DIR = path.join(__dirname, '..', '..', 'public', 'videos', 'VideoStreaming');
   if (!fs.existsSync(OUTPUT_DIR)) {
     fs.mkdirSync(OUTPUT_DIR, { recursive: true });
@@ -155,6 +159,7 @@ function stopFacebookStreaming(cameraId) {
 
 // Stop stream
 function stopStream(cameraId) {
+  _socketIO.emit('stream_stopped', { cameraId });
   if (streamingProcesses[cameraId]) {
     const ffmpegProcess = streamingProcesses[cameraId];
     ffmpegProcess.kill('SIGTERM'); 
@@ -378,4 +383,5 @@ module.exports = {
   stopFacebookStreamHandler,
   checkRtspHandler,
   updateScoreboard,
+  setSocketIO,
 };

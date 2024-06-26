@@ -5,7 +5,10 @@ const app = express();
 const port = process.env.PORT || 3001;
 const cameraController = require('./controllers/camera.controller');
 const router = require('./routers');
-const intervalTime = 60000 * 60 * 4
+const intervalTime = 60000 * 60 * 4;
+const http = require('http');
+const socketIo = require('socket.io');
+const streamHandler = require('./handlers/cameraStreamHandlers');
 
 app.use(cors());
 
@@ -23,7 +26,18 @@ app.get('/', (req, res) => {
 
 app.use('/', router);
 
-app.listen(port, () => {
+const server = http.createServer(app);
+const socketIO = socketIo(server, {
+	cors: {
+		origin: "http://localhost:3000",
+		allowedHeaders: ["my-custom-header"],
+		credentials: true
+}
+});
+
+streamHandler.setSocketIO(socketIO)
+
+server.listen(port, () => {
 	console.log(`Server running on port ${port}`);
 	setInterval(cameraController.cleanVideos, intervalTime);
 	cameraController.resetAllCamerasStatusToReady();
