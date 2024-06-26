@@ -84,6 +84,7 @@ const VideoSegmentsList = ({ cameraId, showDefault }) => {
   };
 
   const handleTabChange = (tab) => {
+    if (tab === CAMERA_TAB.SCORE && !cameraId) return alert("Hãy chọn camera!"); 
     setCurrentTab(tab);
   };
 
