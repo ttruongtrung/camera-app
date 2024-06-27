@@ -14,6 +14,7 @@ import VideoLiveStream from './VideoLiveStream';
 import HLSPlayer from './HlsPlayer';
 import io from 'socket.io-client';
 import axios from 'axios';
+import ResetLiveScoreModal from './modals/ResetLiveScoreModal';
 
 const formatTime = (dateString) => {
   const date = parseISO(dateString);
@@ -40,6 +41,7 @@ const VideoSegmentsList = ({ cameraId, showDefault }) => {
   const [currentSegment, setCurrentSegment] = useState(null);
   const [filterSegments, setFilterSegments] = useState([]);
   const [isStreaming, setIsStreaming] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
   const liveScoreRef = useRef();
   const apiPath = process.env.REACT_APP_BE_API_URL;
   const videoUrl = apiPath + '/api/storage/';
@@ -118,7 +120,7 @@ const VideoSegmentsList = ({ cameraId, showDefault }) => {
       refetch();
       inputRef.current.value = '';
     } else {
-      liveScoreRef.current.resetMatch();
+      setOpenModal(true);
     }
   };
 
@@ -203,7 +205,7 @@ const VideoSegmentsList = ({ cameraId, showDefault }) => {
           </div>
           <div
             onClick={() => handleTabChange(CAMERA_TAB.VIDEO)}
-            className={`p-3 text-center border border-solid border-white rounded-tl rounded-bl w-full ${
+            className={`p-3 text-center text-xl font-semibold border border-solid border-white rounded-tl rounded-bl w-full ${
               currentTab === CAMERA_TAB.VIDEO
                 ? 'bg-orangeE text-white '
                 : 'bg-white'
@@ -213,7 +215,7 @@ const VideoSegmentsList = ({ cameraId, showDefault }) => {
           </div>
           <div
             onClick={() => handleTabChange(CAMERA_TAB.SCORE)}
-            className={`w-40 p-3 text-center border border-solid border-white rounded-tr rounded-br w-full ${
+            className={`w-40 p-3 text-center text-xl font-semibold border border-solid border-white rounded-tr rounded-br w-full ${
               currentTab === CAMERA_TAB.SCORE
                 ? 'bg-orangeE text-white '
                 : 'bg-white'
@@ -266,6 +268,7 @@ const VideoSegmentsList = ({ cameraId, showDefault }) => {
           </>
         )}
       </div>
+      <ResetLiveScoreModal isOpen={openModal} onClose={() => setOpenModal(false)} onSubmit={liveScoreRef.current?.resetMatch} />
     </>
   );
 };

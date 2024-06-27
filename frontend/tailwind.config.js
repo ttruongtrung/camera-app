@@ -9,6 +9,8 @@ module.exports = {
       colors: {
         orangeLight: '#fca136',
         orangeE: '#ff8500',
+        redE: '#a01d21',
+        blueE: '#0D65A3'
       },
     },
   },

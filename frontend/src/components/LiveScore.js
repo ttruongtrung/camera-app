@@ -11,6 +11,7 @@ import { IoCheckmarkDoneSharp } from "react-icons/io5";
 import EditableDiv from './EditableDiv';
 import { format } from 'date-fns';
 import axios from 'axios';
+import { IoIosAdd, IoIosRemove } from 'react-icons/io';
 
 const LiveScore = (props, ref) => {
   const [totalMatch, setTotalMatch] = useState(1);
@@ -47,7 +48,7 @@ const LiveScore = (props, ref) => {
       );
 
       setMatches(response.data);
-      setTotalMatch((response.data?.length || 0) + 1)
+      setTotalMatch((response.data?.length || 0) + 1);
     };
 
     fetchMatches();
@@ -122,12 +123,12 @@ const LiveScore = (props, ref) => {
   };
 
   return (
-    <div className="p-2 text-white">
-      <div className="text-semibold text-2xl text-center mb-4">
+    <div className="p-2 text-white select-none">
+      <div className="font-semibold text-3xl text-center mb-4">
         Trận {totalMatch}
       </div>
       {/* Score */}
-      <div className="text-center text-lg flex gap-4 justify-center items-center py-2">
+      <div className="text-center text-xl font-semibold flex gap-4 justify-center items-center py-2">
         <IoRemoveCircleOutline
           className="cursor-pointer"
           size={36}
@@ -140,50 +141,50 @@ const LiveScore = (props, ref) => {
           onClick={handleIncreaseRace}
         />
       </div>
-      <div className="flex gap-2 items-center justify-center p-2">
-        <div className="text-3xl p-8 bg-blue-400 rounded-md">
+      <div className="grid grid-cols-[1fr_1fr] gap-4 items-center justify-center mx-2">
+        <div className="w-full text-3xl px-2 py-4 bg-blueE rounded-md">
           <EditableDiv
             content={match.player1Name}
             setContent={handlePlayer1NameChange}
-            divClassName="text-center text-2xl text-blue-700 whitespace-nowrap overflow-hidden text-ellipsis w-[100px]"
-            inputClassName="text-[#0284c7] text-base w-[100px]"
+            divClassName="text-center text-2xl text-white whitespace-nowrap overflow-hidden text-ellipsis w-[120px]"
+            inputClassName="text-[#0284c7] text-xl w-[120px]"
           />
-          <div className="flex-1 flex justify-center items-center p-4 text-[60px] rounded-tl rounded-bl my-4 text-blue-700">
+          <div className="flex-1 flex justify-center items-center p-4 text-[60px] font-bold rounded-tl rounded-bl my-4 text-white">
             {match.player1Score}
           </div>
-          <div className="flex justify-center gap-4 px-1 text-blue-700">
-            <CgRemoveR
+          <div className="flex justify-center gap-4 px-1 text-white">
+            <IoIosRemove
               className="cursor-pointer"
-              size={40}
+              size={50}
               onClick={() => handleDecreaseScore(1)}
             />
-            <CgAddR
+            <IoIosAdd
               className="cursor-pointer"
-              size={40}
+              size={50}
               onClick={() => handleIncreaseScore(1)}
             />
           </div>
         </div>
-        <div>Reset</div>
-        <div className="text-3xl p-8 bg-red-400 rounded-md">
+        {/* <div>Reset</div> */}
+        <div className="w-full text-3xl px-2 py-4 bg-redE rounded-md">
           <EditableDiv
             content={match.player2Name}
             setContent={handlePlayer2NameChange}
-            divClassName="text-center text-2xl text-red-700 whitespace-nowrap overflow-hidden text-ellipsis w-[100px]"
-            inputClassName="text-[#dc2626] text-base w-[100px]"
+            divClassName="text-center text-2xl text-white whitespace-nowrap overflow-hidden text-ellipsis w-[120px]"
+            inputClassName="text-[#dc2626] text-base w-[120px]"
           />
-          <div className="flex-1 flex justify-center items-center p-4 text-[60px] rounded-tl rounded-bl my-4 text-red-700">
+          <div className="flex-1 flex justify-center items-center p-4 text-[60px] font-bold rounded-tl rounded-bl my-4 text-white">
             {match.player2Score}
           </div>
-          <div className="flex justify-center gap-4 px-1 text-red-700">
-            <CgRemoveR
+          <div className="flex justify-center gap-4 px-1 text-white">
+            <IoIosRemove
               className="cursor-pointer"
-              size={40}
+              size={50}
               onClick={() => handleDecreaseScore(2)}
             />
-            <CgAddR
+            <IoIosAdd
               className="cursor-pointer"
-              size={40}
+              size={50}
               onClick={() => handleIncreaseScore(2)}
             />
           </div>
@@ -195,32 +196,61 @@ const LiveScore = (props, ref) => {
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-slate-500 font-semibold">
               <tr className="">
-                <th className="whitespace-nowrap px-6 py-3 text-xs uppercase text-center tracking-wider">#</th>
-                <th className="whitespace-nowrap px-6 py-3 text-xs uppercase text-center tracking-wider truncate max-w-[120px]">{match.player1Name}</th>
-                <th className="whitespace-nowrap px-6 py-3 text-xs uppercase text-center tracking-wider truncate max-w-[120px]">{match.player2Name}</th>
-                <th className="whitespace-nowrap px-6 py-3 text-xs uppercase text-center tracking-wider">Thời gian</th>
+                <th className="whitespace-nowrap px-6 py-3 text-xs uppercase text-center tracking-wider">
+                  #
+                </th>
+                <th className="whitespace-nowrap px-6 py-3 text-xs uppercase text-center tracking-wider truncate max-w-[120px]">
+                  {match.player1Name}
+                </th>
+                <th className="whitespace-nowrap px-6 py-3 text-xs uppercase text-center tracking-wider truncate max-w-[120px]">
+                  {match.player2Name}
+                </th>
+                <th className="whitespace-nowrap px-6 py-3 text-xs uppercase text-center tracking-wider">
+                  Thời gian
+                </th>
               </tr>
             </thead>
             <tbody>
               {matches.map((m, index) => (
-                <tr key={index} className={m.playerWin === 1 ? 'bg-blue-400 border-b border-white' : 'bg-red-400 border-b border-white'}>
-                  <td className="px-6 py-2 text-center whitespace-nowrap text-sm">Trận {index + 1}</td>
+                <tr
+                  key={index}
+                  className={
+                    m.playerWin === 1
+                      ? 'bg-blueE border-b border-white'
+                      : 'bg-redE border-b border-white'
+                  }
+                >
+                  <td className="px-6 py-2 text-center whitespace-nowrap text-sm">
+                    Trận {index + 1}
+                  </td>
                   {/* <td className="px-6 py-2 text-center whitespace-nowrap">{m.player1Score}</td>
                   <td className="px-6 py-2 text-center whitespace-nowrap">{m.player2Score}</td> */}
-                  <td colSpan="2" className="px-6 py-2 text-center align-middle whitespace-nowrap font-bold">
-                    <div className="flex gap-2 justify-center items-center">
-                      <IoCheckmarkDoneSharp className={`inline text-blue-500 ${m.playerWin !== 1 ? 'opacity-0' : ''}`}/>
+                  <td
+                    colSpan="2"
+                    className="px-6 py-2 text-center align-middle whitespace-nowrap font-bold"
+                  >
+                    <div className="flex gap-2 justify-center items-center text-xl">
+                      <IoCheckmarkDoneSharp
+                        className={`inline text-blue-500 ${
+                          m.playerWin !== 1 ? 'opacity-0' : ''
+                        }`}
+                      />
                       {m.player1Score} - {m.player2Score}
-                      <IoCheckmarkDoneSharp className={`inline text-blue-700 ${m.playerWin !== 2 ? 'opacity-0' : ''}`}/>
+                      <IoCheckmarkDoneSharp
+                        className={`inline text-white ${
+                          m.playerWin !== 2 ? 'opacity-0' : ''
+                        }`}
+                      />
                     </div>
                   </td>
-                  <td className="px-6 py-2 text-center whitespace-nowrap text-sm italic">{format(m.time, 'HH:mm')}</td>
+                  <td className="px-6 py-2 text-center whitespace-nowrap text-sm italic">
+                    {format(m.time, 'HH:mm')}
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-
       </div>
     </div>
   );

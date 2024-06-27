@@ -12,11 +12,11 @@ const EditableDiv = ({ content, setContent, divClassName, inputClassName }) => {
   };
 
   return (
-    <div className="flex items-center justify-center gap-2">
+    <div className="relative flex items-center justify-center gap-2">
       {isEditing ? (
-          <FaCheck size={20} className="text-[#22c55e] cursor-pointer" onClick={handleCheckClick} />
+          <FaCheck size={20} className="text-[#22c55e] absolute left-1 cursor-pointer" onClick={handleCheckClick} />
     ) : (
-          <FaRegEdit size={20} className="text-white cursor-pointer" onClick={() => setIsEditing(true)} />
+          <FaRegEdit size={20} className="absolute left-1 text-white cursor-pointer" onClick={() => setIsEditing(true)} />
       )}
       {isEditing ? (
         <input
