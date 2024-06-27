@@ -33,7 +33,7 @@ module.exports = {
 
   getAllCameras: async (req, res) => {
     try {
-      const cameras = await Camera.findAll();
+      const cameras = await Camera.findAll({ order: [['id', 'ASC']] });
       res.status(200).send(cameras);
     } catch (error) {
       console.error('Error retrieving cameras:', error);
