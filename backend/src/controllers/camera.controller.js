@@ -243,6 +243,7 @@ module.exports = {
       const cameras = await Camera.findAll();
       for (const camera of cameras) {
         camera.status = CAMERA_STATUS.READY;
+        camera.streamingStatus = CAMERA_STATUS.READY;
         await camera.save();
       }
 
