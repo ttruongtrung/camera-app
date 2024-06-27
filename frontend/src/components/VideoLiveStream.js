@@ -16,7 +16,7 @@ const VideoLiveStream = ({ cameraId }) => {
         autoplay: true,
         preload: 'auto',
         sources: [{
-          src: `${apiPath}/videos/VideoStreaming/stream_${cameraId}.m3u8`,
+          src: `${apiPath}/hls/stream_${cameraId}.m3u8`,
           type: 'application/x-mpegURL'
         }]
       });

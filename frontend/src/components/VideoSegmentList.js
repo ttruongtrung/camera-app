@@ -11,6 +11,7 @@ import { isIOS } from '../utils/checkDevice';
 import { CAMERA_TAB } from '../constants/Camera';
 import LiveScore from './LiveScore';
 import VideoLiveStream from './VideoLiveStream';
+import HLSPlayer from './HlsPlayer';
 import io from 'socket.io-client';
 import axios from 'axios';
 
@@ -170,7 +171,11 @@ const VideoSegmentsList = ({ cameraId, showDefault }) => {
           </div>
         ): ( currentTab === CAMERA_TAB.SCORE && isStreaming
             ? 
-              <VideoLiveStream 
+              // <VideoLiveStream 
+              //   cameraId={cameraId} 
+              //   className="relative rounded overflow-hidden w-[500px] max-w-full md:max-w-xl"
+              // />
+              <HLSPlayer
                 cameraId={cameraId} 
                 className="relative rounded overflow-hidden w-[500px] max-w-full md:max-w-xl"
               />
