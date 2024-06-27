@@ -56,6 +56,23 @@ module.exports = {
     }
   },
 
+  getCameraStreamingStatusById: async (req, res) => {
+    const id = req.params.cameraId;
+    try {
+      const camera = await Camera.findByPk(id, {
+        attributes: ['streamingStatus']
+      });
+      if (!camera) {
+        res.status(404).send({ message: 'Camera for streaming status not found' });
+      } else {
+        res.status(200).send(camera);
+      }
+    } catch (error) {
+      console.error('Error retrieving camera for streaming status:', error);
+      res.status(500).send({ message: 'Internal server error' });
+    }
+  },
+
   updateCamera: async (req, res) => {
     const id = req.params.id;
 

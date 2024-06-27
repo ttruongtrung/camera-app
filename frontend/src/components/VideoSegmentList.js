@@ -12,6 +12,7 @@ import { CAMERA_TAB } from '../constants/Camera';
 import LiveScore from './LiveScore';
 import VideoLiveStream from './VideoLiveStream';
 import io from 'socket.io-client';
+import axios from 'axios';
 
 const formatTime = (dateString) => {
   const date = parseISO(dateString);
@@ -47,6 +48,26 @@ const VideoSegmentsList = ({ cameraId, showDefault }) => {
 
   const { data: segments, isLoading, refetch } = useSegmentList(cameraId);
   const socket = io('http://localhost:3001');
+
+  const getCameraStreamingStatus = async (cameraId) => {
+    try {
+      const response = await axios.get(
+        `${apiPath}/api/camera/${cameraId}/streamingStatus`
+      );
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching cameras:', error);
+    }
+  };
+
+  useEffect(() => {
+    const getStreamingStatus = async () => {
+      const data = await getCameraStreamingStatus(cameraId); console.log('checkStatus', data);
+      setIsStreaming(data?.streamingStatus === 'streaming');
+    }
+
+    if (cameraId) getStreamingStatus();
+  }, [cameraId]);
 
   useEffect(() => {
     if (!isLoading && segments) {
