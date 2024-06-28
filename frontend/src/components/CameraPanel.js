@@ -79,7 +79,7 @@ const CameraPanel = ({ camera, onClick, isSelected }) => {
 
   const startCaptureStream = async () => {
     try {
-      const rtsp = getRTSPlink(
+      const rtsp = camera.rtspLink || getRTSPlink(
         camera.model_type,
         camera.ip_address,
         camera.username,
@@ -118,7 +118,7 @@ const CameraPanel = ({ camera, onClick, isSelected }) => {
   
   const startLiveStream = async () => {
     try {
-      const rtsp = getRTSPlink(
+      const rtsp = camera.rtspLink || getRTSPlink(
         camera.model_type,
         camera.ip_address,
         camera.username,

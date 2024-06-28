@@ -19,7 +19,7 @@ const CameraModal = ({ isOpen, onClose, onAdd }) => {
       ip_address: ipAddressRef.current.value,
       username: usernameRef.current.value,
       password: passwordRef.current.value,
-      rtsp_link: rtspLinkRef.current.value,
+      rtspLink: rtspLinkRef.current.value,
     };
     onAdd(cameraInfo);
     onClose();
@@ -105,13 +105,12 @@ const CameraModal = ({ isOpen, onClose, onAdd }) => {
         />
       </div>
       <div className="flex justify-between mb-4">
-        <label htmlFor="rtsp_link" className="block font-semibold mb-1">
+        <label htmlFor="rtspLink" className="block font-semibold mb-1">
           RTSP Link:
         </label>
         <textarea
-          readOnly
-          name="rtsp_link"
-          id="rtsp_link"
+          name="rtspLink"
+          id="rtspLink"
           ref={rtspLinkRef}
           className="w-2/3 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:border-blue-500"
           rows="3"

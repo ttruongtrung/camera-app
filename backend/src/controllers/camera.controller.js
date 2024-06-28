@@ -20,7 +20,8 @@ module.exports = {
         ip_address: req.body.ip_address,
         streamingStatus : 'ready',
         username: req.body.username,
-        password: req.body.password
+        password: req.body.password,
+        rtspLink: req.body.rtspLink
       };
 
       const createdCamera = await Camera.create(cameraData);
@@ -89,7 +90,8 @@ module.exports = {
         name: req.body.name,
         ip_address: req.body.ip_address,
         username: req.body.username,
-        password: req.body.password
+        password: req.body.password,
+        rtspLink: req.body.rtspLink
       };
 
       await camera.update(updates);
