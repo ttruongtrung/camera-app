@@ -194,7 +194,7 @@ const LiveScore = (props, ref) => {
       <div className="mt-8">
         <div className="flex justify-center mt-10 rounded-lg overflow-hidden">
           <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-slate-500 font-semibold">
+            <thead className="bg-black font-semibold">
               <tr className="">
                 <th className="whitespace-nowrap px-6 py-3 text-xs uppercase text-center tracking-wider">
                   #
