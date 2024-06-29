@@ -45,7 +45,7 @@ function startCaptureStream(cameraId, rtsp) {
   captureProcess.on('close', (code) => {
     console.log(`ffmpeg process exited with code ${code}`);
     const startTime = moment();
-    const endTime = moment(startTime).add(60000, 'milliseconds');
+    const endTime = moment(startTime).add(intervalTime, 'milliseconds');
     const data = VideoSegmentCtrl.createWithRawData({
       cameraId: cameraId,
       description: fileName,
