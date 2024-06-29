@@ -1,10 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Modal from 'react-modal';
 import { useForm } from 'react-hook-form';
 import { HiEye, HiEyeOff } from 'react-icons/hi';
+import { useDebouncedCallback } from 'use-debounce';
+import { getRTSPlink } from '../../utils/rtspHandler';
 
 const EditCameraModal = ({ isOpen, onClose, onSubmit, camera }) => {
   const [showPassword, setShowPassword] = useState(false);
+  const ipAddressRef = useRef();
+  const rtspLinkRef = useRef();
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -20,6 +24,18 @@ const EditCameraModal = ({ isOpen, onClose, onSubmit, camera }) => {
       });
     }
   }, [camera, setValue]);
+
+  const handleInputChange = useDebouncedCallback(() => {
+    if (camera?.model_type) {
+      const rtsp = getRTSPlink(
+        camera?.model_type,
+        ipAddressRef.current?.value,
+        camera?.username,
+        camera?.password
+      );
+      rtspLinkRef.current.value = rtsp;
+    }
+  }, 500);
 
   const onFormSubmit = (data) => {
     console.log(data);
@@ -92,6 +108,8 @@ const EditCameraModal = ({ isOpen, onClose, onSubmit, camera }) => {
               id="ip"
               className="w-2/3 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:border-blue-500"
               {...register('ip_address')}
+              ref={ipAddressRef}
+              onChange={handleInputChange}
             />
           </div>
           <div className="flex justify-between mb-4">
@@ -138,6 +156,7 @@ const EditCameraModal = ({ isOpen, onClose, onSubmit, camera }) => {
               className="w-2/3 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:border-blue-500"
               rows="3"
               {...register('rtspLink')}
+              ref={rtspLinkRef}
             ></textarea>
           </div>
           <button

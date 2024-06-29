@@ -35,7 +35,7 @@ const CameraModal = ({ isOpen, onClose, onAdd }) => {
       );
       rtspLinkRef.current.value = rtsp;
     }
-  }, 1000);
+  }, 500);
 
   const FormContent = () => (
     <form onSubmit={handleSubmit} className="p-10">
