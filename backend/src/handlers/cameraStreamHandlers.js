@@ -15,19 +15,23 @@ const scoreboardPath = path.join(__dirname, '..', '..', 'public', 'videos', 'sco
 let _socketIO;
 const setSocketIO = (socketIoInstance) => _socketIO = socketIoInstance;
 
-
-// Start capture stream for cutting video
 function startCaptureStream(cameraId, rtsp) {
   console.log('start capture on Backend');
   const fileName = `data_camera${cameraId}_${Date.now()}.mp4`;
   const outputPath = path.join(__dirname, '..', '..', 'public', 'videos', fileName);
+  
   const args = [
-    '-copyts',
+    '-rtsp_transport', 'tcp',  
     '-i', rtsp,
-    '-c', 'copy',
-    '-t', '60',
+    '-c:v', 'libx264',  
+    '-preset', 'fast', 
+    '-t', '60',  
+    '-movflags', '+faststart',  
+    '-bufsize', '4M',  
+    '-y',  
     outputPath
   ];
+  
   const captureProcess = spawn('ffmpeg', args);
 
   captureProcess.stdout.on('data', (data) => {
@@ -41,12 +45,12 @@ function startCaptureStream(cameraId, rtsp) {
   captureProcess.on('close', (code) => {
     console.log(`ffmpeg process exited with code ${code}`);
     const startTime = moment();
-    const endTime = moment(startTime).add(intervalTime, 'milliseconds');
+    const endTime = moment(startTime).add(60000, 'milliseconds');
     const data = VideoSegmentCtrl.createWithRawData({
       cameraId: cameraId,
       description: fileName,
-      startTime: startTime,
-      endTime: endTime,
+      startTime: startTime.toISOString(),
+      endTime: endTime.toISOString(),
       videoFile: outputPath
     });
     console.log('Finish write to record: ', data);
@@ -72,8 +76,8 @@ function startStreaming(cameraId, rtsp) {
     '-preset', 'fast',
     '-b:v', '2000k',
     '-threads', 'auto',
-    '-hls_time', '12',
-    '-hls_list_size', '3',
+    '-hls_time', '3',
+    '-hls_list_size', '2',
     '-hls_flags', 'delete_segments',
     OUTPUT_FILE
   ];
