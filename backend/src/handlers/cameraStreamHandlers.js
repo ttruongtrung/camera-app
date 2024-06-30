@@ -7,10 +7,11 @@ const fs = require('fs');
 const streamingProcesses = {}; 
 const cameraStatus = {};
 const cameraStreamingStatus = {};
-const intervalTime = 60000;
+const intervalTime = 60000*5;
 const facebookStreamingProcess = {};
 const { createCanvas  } = require('canvas');
 const scoreboardPath = path.join(__dirname, '..', '..', 'public', 'videos', 'scoreboard.png');
+const { exec } = require('child_process');
 
 let _socketIO;
 const setSocketIO = (socketIoInstance) => _socketIO = socketIoInstance;
@@ -25,7 +26,7 @@ function startCaptureStream(cameraId, rtsp) {
     '-i', rtsp,
     '-c:v', 'libx264',  
     '-preset', 'fast', 
-    '-t', '60',  
+    '-t', '300',  
     '-movflags', '+faststart',  
     '-bufsize', '4M',  
     '-y',  
@@ -57,19 +58,53 @@ function startCaptureStream(cameraId, rtsp) {
   });
 }
 
-// Start stream local 
 function startStreaming(cameraId, rtsp) {
   console.log(`Start streaming for camera ${cameraId}`);
   _socketIO.emit('stream_started', { cameraId });
+  
   const OUTPUT_DIR = path.join(__dirname, '..', '..', 'public', 'videos', 'VideoStreaming');
   if (!fs.existsSync(OUTPUT_DIR)) {
     fs.mkdirSync(OUTPUT_DIR, { recursive: true });
   }
+  
   const OUTPUT_FILE = path.join(OUTPUT_DIR, `stream_${cameraId}.m3u8`);
+  
+  function deleteFile(filePath) {
+    fs.unlink(filePath, (err) => {
+      if (err) {
+        if (err.code === 'ENOENT') {
+          console.log(`File ${filePath} does not exist, continuing...`);
+        } else {
+          console.error(`Error deleting file ${filePath}:`, err);
+        }
+      } else {
+        console.log(`Deleted file ${filePath}`);
+      }
+    });
+  }
+
+  // Delete existing .m3u8 file
+  deleteFile(OUTPUT_FILE);
+
+  // Delete existing .ts files for the specific cameraId
+  fs.readdir(OUTPUT_DIR, (err, files) => {
+    if (err) {
+      console.error(`Error reading directory ${OUTPUT_DIR}:`, err);
+      return;
+    }
+    
+    files.forEach((file) => {
+      if (file.startsWith(`stream_${cameraId}_`) && file.endsWith('.ts')) {
+        deleteFile(path.join(OUTPUT_DIR, file));
+      }
+    });
+  });
+
+  // Start FFmpeg command
   const command = [
     'ffmpeg',
     '-rtsp_transport', 'tcp',
-    '-re', 
+    '-re',
     '-i', rtsp,
     '-an',
     '-c:v', 'libx264',
@@ -79,6 +114,7 @@ function startStreaming(cameraId, rtsp) {
     '-hls_time', '3',
     '-hls_list_size', '2',
     '-hls_flags', 'delete_segments',
+    '-hls_segment_filename', path.join(OUTPUT_DIR, `stream_${cameraId}_%03d.ts`),
     OUTPUT_FILE
   ];
 
